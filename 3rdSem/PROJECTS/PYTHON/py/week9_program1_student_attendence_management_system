@@ -1,0 +1,240 @@
+# =====================================================
+#  STUDENT ATTENDANCE MANAGEMENT SYSTEM  (menu-driven project)
+#  Add Student / Record / View / Percentage / Low Attendance
+# =====================================================
+
+import datetime
+
+WIDTH = 100
+
+BANNER = r"""
+ █████╗ ████████╗████████╗███████╗███╗   ██╗██████╗  █████╗ ███╗   ██╗ ██████╗███████╗
+██╔══██╗╚══██╔══╝╚══██╔══╝██╔════╝████╗  ██║██╔══██╗██╔══██╗████╗  ██║██╔════╝██╔════╝
+███████║   ██║      ██║   █████╗  ██╔██╗ ██║██║  ██║███████║██╔██╗ ██║██║     █████╗
+██╔══██║   ██║      ██║   ██╔══╝  ██║╚██╗██║██║  ██║██╔══██║██║╚██╗██║██║     ██╔══╝
+██║  ██║   ██║      ██║   ███████╗██║ ╚████║██████╔╝██║  ██║██║ ╚████║╚██████╗███████╗
+╚═╝  ╚═╝   ╚═╝      ╚═╝   ╚══════╝╚═╝  ╚═══╝╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═══╝ ╚═════╝╚══════╝
+"""
+
+# ---------- BOX DRAWING ----------
+def box_top(w=WIDTH):
+    return "╔" + "═" * (w - 2) + "╗"
+
+def box_bottom(w=WIDTH):
+    return "╚" + "═" * (w - 2) + "╝"
+
+def box_divider(w=WIDTH):
+    return "╠" + "═" * (w - 2) + "╣"
+
+def box_line(text, w=WIDTH):
+    pad = max(w - 4 - len(text), 0)
+    return f"║ {text}{' ' * pad} ║"
+
+def print_boxed(lines, w=WIDTH):
+    print(box_top(w))
+    for line in lines:
+        print(box_line(line, w))
+    print(box_bottom(w))
+
+# ---------- DATA ----------
+attendance_records = {}
+attendance_students = {}
+
+# ---------- CORE FUNCTIONS ----------
+def add_attendance_student(roll, name):
+    if roll in attendance_students:
+        return False
+    attendance_students[roll] = {'name': name, 'attendance': {}}
+    return True
+
+def record_attendance_data(roll, date_obj, status):
+    if roll not in attendance_students:
+        return False
+    if status not in ('P', 'A'):
+        return False
+    attendance_students[roll]['attendance'][date_obj] = status
+    return True
+
+def get_attendance_percentage(roll):
+    data = attendance_students[roll]['attendance']
+    if not data:
+        return 0.0
+    present = sum(1 for s in data.values() if s == 'P')
+    return (present / len(data)) * 100
+
+def get_low_attendance(threshold):
+    result = []
+    for roll, data in attendance_students.items():
+        att = data['attendance']
+        if not att:
+            pct = 0.0
+        else:
+            present = sum(1 for s in att.values() if s == 'P')
+            pct = (present / len(att)) * 100
+        if pct < threshold:
+            result.append((data['name'], roll, pct))
+    return result
+
+def parse_date(date_str):
+    try:
+        return datetime.datetime.strptime(date_str.strip(), '%Y-%m-%d').date()
+    except ValueError:
+        return None
+
+# ---------- MENU ----------
+def main():
+    print(BANNER)
+    print("      Terminal Student Attendance Management System".center(WIDTH))
+    print()
+
+    while True:
+        print_boxed([
+            "  [1] Add Student",
+            "  [2] Record Attendance",
+            "  [3] View Attendance",
+            "  [4] Calculate Attendance Percentage",
+            "  [5] Identify Low Attendance Students",
+            "  [6] Exit"
+        ])
+        option = input("> Enter option: ").strip()
+
+        if option == "1":
+            roll = input("> Enter student roll number: ").strip()
+            if not roll:
+                print()
+                print_boxed(["ERROR: Roll cannot be empty."])
+                print()
+                continue
+            if roll in attendance_students:
+                print()
+                print_boxed([f"ERROR: Student with roll {roll} already exists."])
+                print()
+                continue
+            name = input("> Enter student name: ").strip()
+            add_attendance_student(roll, name)
+            print()
+            print_boxed(["STUDENT ADDED:", "", f"  Name : {name}", f"  Roll : {roll}"])
+            print()
+
+        elif option == "2":
+            roll = input("> Enter student roll number: ").strip()
+            if roll not in attendance_students:
+                print()
+                print_boxed([f"ERROR: Student with roll {roll} not found."])
+                print()
+                continue
+            date_obj = parse_date(input("> Enter date (YYYY-MM-DD): "))
+            if date_obj is None:
+                print()
+                print_boxed(["ERROR: Invalid date format. Use YYYY-MM-DD."])
+                print()
+                continue
+            status = input("> Enter status (P for Present, A for Absent): ").strip().upper()
+            if status not in ('P', 'A'):
+                print()
+                print_boxed(["ERROR: Invalid status. Enter 'P' or 'A'."])
+                print()
+                continue
+            record_attendance_data(roll, date_obj, status)
+            print()
+            print_boxed([f"Attendance for {attendance_students[roll]['name']} on {date_obj} = {status}."])
+            print()
+
+        elif option == "3":
+            choice = input("> View by (S)tudent or (D)ate? ").strip().upper()
+            if choice == "S":
+                roll = input("> Enter student roll number: ").strip()
+                if roll not in attendance_students:
+                    print()
+                    print_boxed([f"ERROR: Student with roll {roll} not found."])
+                    print()
+                    continue
+                lines = [f"ATTENDANCE FOR {attendance_students[roll]['name']} (Roll: {roll}):", ""]
+                att = attendance_students[roll]['attendance']
+                if att:
+                    for date, status in sorted(att.items()):
+                        lines.append(f"  {date}: {status}")
+                else:
+                    lines.append("  No attendance records found.")
+                print()
+                print_boxed(lines)
+                print()
+            elif choice == "D":
+                date_obj = parse_date(input("> Enter date to view (YYYY-MM-DD): "))
+                if date_obj is None:
+                    print()
+                    print_boxed(["ERROR: Invalid date format. Use YYYY-MM-DD."])
+                    print()
+                    continue
+                lines = [f"ATTENDANCE FOR {date_obj}:", ""]
+                found = False
+                for roll, data in attendance_students.items():
+                    if date_obj in data['attendance']:
+                        lines.append(f"  {data['name']} (Roll: {roll}): {data['attendance'][date_obj]}")
+                        found = True
+                if not found:
+                    lines.append("  No attendance records for this date.")
+                print()
+                print_boxed(lines)
+                print()
+            else:
+                print()
+                print_boxed(["ERROR: Enter 'S' or 'D'."])
+                print()
+
+        elif option == "4":
+            roll = input("> Enter student roll number: ").strip()
+            if roll not in attendance_students:
+                print()
+                print_boxed([f"ERROR: Student with roll {roll} not found."])
+                print()
+                continue
+            pct = get_attendance_percentage(roll)
+            print()
+            print_boxed([
+                "ATTENDANCE PERCENTAGE:",
+                "",
+                f"  Name       : {attendance_students[roll]['name']}",
+                f"  Roll       : {roll}",
+                f"  Percentage : {pct:.2f}%",
+            ])
+            print()
+
+        elif option == "5":
+            try:
+                threshold = float(input("> Enter threshold percentage (0-100): ").strip())
+            except ValueError:
+                print()
+                print_boxed(["ERROR: Invalid number."])
+                print()
+                continue
+            if not 0 <= threshold <= 100:
+                print()
+                print_boxed(["ERROR: Threshold must be between 0 and 100."])
+                print()
+                continue
+            low = get_low_attendance(threshold)
+            if not low:
+                print()
+                print_boxed([f"No students below {threshold:.2f}%."])
+                print()
+                continue
+            lines = [f"STUDENTS BELOW {threshold:.2f}%:", ""]
+            for name, roll, pct in low:
+                lines.append(f"  Name: {name}, Roll: {roll}, Percentage: {pct:.2f}%")
+            print()
+            print_boxed(lines)
+            print()
+
+        elif option == "6":
+            print()
+            print_boxed(["Goodbye!"])
+            print()
+            break
+
+        else:
+            print_boxed(["Invalid option, try again."])
+            print()
+
+if __name__ == "__main__":
+    main()

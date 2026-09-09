@@ -1,0 +1,240 @@
+# =====================================================
+#  MOBILE CONTACT AND CALL MANAGEMENT SYSTEM  (menu-driven project)
+#  Add / View / Search / Update / Delete contacts + Call log
+# =====================================================
+
+import datetime
+
+WIDTH = 100
+
+BANNER = r"""
+ ██████╗ ██████╗ ███╗   ██╗████████╗ █████╗  ██████╗████████╗
+██╔════╝██╔═══██╗████╗  ██║╚══██╔══╝██╔══██╗██╔════╝╚══██╔══╝
+██║     ██║   ██║██╔██╗ ██║   ██║   ███████║██║        ██║
+██║     ██║   ██║██║╚██╗██║   ██║   ██╔══██║██║        ██║
+╚██████╗╚██████╔╝██║ ╚████║   ██║   ██║  ██║╚██████╗   ██║
+ ╚═════╝ ╚═════╝ ╚═╝  ╚═══╝   ╚═╝   ╚═╝  ╚═╝ ╚═════╝   ╚═╝
+ ██████╗ █████╗ ██╗     ██╗
+██╔════╝██╔══██╗██║     ██║
+██║     ███████║██║     ██║
+██║     ██╔══██║██║     ██║
+╚██████╗██║  ██║███████╗███████╗
+ ╚═════╝╚═╝  ╚═╝╚══════╝╚══════╝
+"""
+
+# ---------- BOX DRAWING ----------
+def box_top(w=WIDTH):
+    return "╔" + "═" * (w - 2) + "╗"
+
+def box_bottom(w=WIDTH):
+    return "╚" + "═" * (w - 2) + "╝"
+
+def box_divider(w=WIDTH):
+    return "╠" + "═" * (w - 2) + "╣"
+
+def box_line(text, w=WIDTH):
+    pad = max(w - 4 - len(text), 0)
+    return f"║ {text}{' ' * pad} ║"
+
+def print_boxed(lines, w=WIDTH):
+    print(box_top(w))
+    for line in lines:
+        print(box_line(line, w))
+    print(box_bottom(w))
+
+# ---------- DATA ----------
+contacts = {}
+call_records = []
+
+# ---------- CORE FUNCTIONS ----------
+def add_contact_data(name, phone, email):
+    if name in contacts:
+        return False
+    contacts[name] = {'phone': phone, 'email': email}
+    return True
+
+def search_contacts(term):
+    term = term.lower()
+    matches = {}
+    for name, details in contacts.items():
+        if term in name.lower() or term in details['phone']:
+            matches[name] = details
+    return matches
+
+def update_contact_data(name, new_phone, new_email):
+    if name not in contacts:
+        return False
+    if new_phone:
+        contacts[name]['phone'] = new_phone
+    if new_email:
+        contacts[name]['email'] = new_email
+    return True
+
+def delete_contact_data(name):
+    if name not in contacts:
+        return False
+    del contacts[name]
+    return True
+
+def log_call(target, number):
+    call_records.append({
+        'type': 'outgoing',
+        'target': target,
+        'number': number,
+        'time': datetime.datetime.now()
+    })
+
+def resolve_call_target(target):
+    if target.isdigit():
+        for name, details in contacts.items():
+            if details['phone'] == target:
+                return name, target
+        return target, target
+    if target in contacts:
+        return target, contacts[target]['phone']
+    return None, None
+
+def format_contact(name, details):
+    email = details['email'] if details['email'] else 'N/A'
+    return [f"  Name  : {name}", f"  Phone : {details['phone']}", f"  Email : {email}"]
+
+# ---------- MENU ----------
+def main():
+    print(BANNER)
+    print("      Terminal Mobile Contact and Call Management System".center(WIDTH))
+    print()
+
+    while True:
+        print_boxed([
+            "  [1] Add Contact",
+            "  [2] View Contacts",
+            "  [3] Search Contact",
+            "  [4] Update Contact",
+            "  [5] Delete Contact",
+            "  [6] Make Call",
+            "  [7] View Call History",
+            "  [8] Exit"
+        ])
+        option = input("> Enter option: ").strip()
+
+        if option == "1":
+            name = input("> Enter contact name: ").strip()
+            if not name:
+                print()
+                print_boxed(["ERROR: Name cannot be empty."])
+                print()
+                continue
+            if name in contacts:
+                print()
+                print_boxed([f"ERROR: Contact '{name}' already exists."])
+                print()
+                continue
+            phone = input("> Enter phone number: ").strip()
+            email = input("> Enter email (optional): ").strip()
+            add_contact_data(name, phone, email)
+            print()
+            print_boxed(["CONTACT ADDED:", "", f"  Name  : {name}", f"  Phone : {phone}"])
+            print()
+
+        elif option == "2":
+            if not contacts:
+                print()
+                print_boxed(["No contacts available."])
+                print()
+                continue
+            lines = [f"  {'Name':<20}{'Phone':<20}{'Email':<30}", "-" * (WIDTH - 8)]
+            for name, details in contacts.items():
+                email = details['email'] if details['email'] else 'N/A'
+                lines.append(f"  {name:<20}{details['phone']:<20}{email:<30}")
+            print()
+            print_boxed(lines)
+            print()
+
+        elif option == "3":
+            term = input("> Enter name or phone number to search: ").strip()
+            matches = search_contacts(term)
+            if not matches:
+                print()
+                print_boxed(["No contacts found matching your search term."])
+                print()
+                continue
+            lines = ["SEARCH RESULTS:", ""]
+            for name, details in matches.items():
+                lines.extend(format_contact(name, details))
+                lines.append("")
+            print()
+            print_boxed(lines)
+            print()
+
+        elif option == "4":
+            name = input("> Enter the name of the contact to update: ").strip()
+            if name not in contacts:
+                print()
+                print_boxed([f"ERROR: Contact '{name}' not found."])
+                print()
+                continue
+            print()
+            print_boxed(format_contact(name, contacts[name]))
+            print()
+            new_phone = input(f"> Enter new phone (blank keeps {contacts[name]['phone']}): ").strip()
+            new_email = input("> Enter new email (blank keeps current): ").strip()
+            update_contact_data(name, new_phone, new_email)
+            print()
+            print_boxed([f"Contact '{name}' updated successfully."])
+            print()
+
+        elif option == "5":
+            name = input("> Enter the name of the contact to delete: ").strip()
+            if delete_contact_data(name):
+                print()
+                print_boxed([f"Contact '{name}' deleted successfully."])
+                print()
+            else:
+                print()
+                print_boxed([f"ERROR: Contact '{name}' not found."])
+                print()
+
+        elif option == "6":
+            target = input("> Enter contact name or phone number to call: ").strip()
+            if not target:
+                print()
+                print_boxed(["ERROR: Nothing entered."])
+                print()
+                continue
+            name, number = resolve_call_target(target)
+            if number is None:
+                print()
+                print_boxed([f"No contact found for '{target}'."])
+                print()
+                continue
+            print()
+            print_boxed([f"Calling {name} ({number})...", "Call ended."])
+            print()
+            log_call(name, number)
+
+        elif option == "7":
+            if not call_records:
+                print()
+                print_boxed(["No call records available."])
+                print()
+                continue
+            lines = ["CALL HISTORY:", ""]
+            for record in call_records:
+                ts = record['time'].strftime('%Y-%m-%d %H:%M:%S')
+                lines.append(f"  {record['type'].capitalize():<9} | {record['target']:<15} | {record['number']:<15} | {ts}")
+            print()
+            print_boxed(lines)
+            print()
+
+        elif option == "8":
+            print()
+            print_boxed(["Goodbye!"])
+            print()
+            break
+
+        else:
+            print_boxed(["Invalid option, try again."])
+            print()
+
+if __name__ == "__main__":
+    main()

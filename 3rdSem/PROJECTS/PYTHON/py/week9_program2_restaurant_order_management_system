@@ -1,0 +1,232 @@
+# =====================================================
+#  RESTAURANT ORDER MANAGEMENT SYSTEM  (menu-driven project)
+#  Display Menu / Take Order / Calculate Bill / Receipt
+# =====================================================
+
+import datetime
+
+WIDTH = 100
+
+BANNER = r"""
+██████╗ ███████╗███████╗████████╗ █████╗ ██╗   ██╗██████╗  █████╗ ███╗   ██╗████████╗
+██╔══██╗██╔════╝██╔════╝╚══██╔══╝██╔══██╗██║   ██║██╔══██╗██╔══██╗████╗  ██║╚══██╔══╝
+██████╔╝█████╗  ███████╗   ██║   ███████║██║   ██║██████╔╝███████║██╔██╗ ██║   ██║
+██╔══██╗██╔══╝  ╚════██║   ██║   ██╔══██║██║   ██║██╔══██╗██╔══██║██║╚██╗██║   ██║
+██║  ██║███████╗███████║   ██║   ██║  ██║╚██████╔╝██║  ██║██║  ██║██║ ╚████║   ██║
+╚═╝  ╚═╝╚══════╝╚══════╝   ╚═╝   ╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═══╝   ╚═╝
+"""
+
+# ---------- BOX DRAWING ----------
+def box_top(w=WIDTH):
+    return "╔" + "═" * (w - 2) + "╗"
+
+def box_bottom(w=WIDTH):
+    return "╚" + "═" * (w - 2) + "╝"
+
+def box_divider(w=WIDTH):
+    return "╠" + "═" * (w - 2) + "╣"
+
+def box_line(text, w=WIDTH):
+    pad = max(w - 4 - len(text), 0)
+    return f"║ {text}{' ' * pad} ║"
+
+def print_boxed(lines, w=WIDTH):
+    print(box_top(w))
+    for line in lines:
+        print(box_line(line, w))
+    print(box_bottom(w))
+
+# ---------- DATA ----------
+menu = {
+    "Pizza": 12.50,
+    "Burger": 8.75,
+    "Pasta": 10.00,
+    "Salad": 7.25,
+    "Coke": 2.00,
+    "Water": 1.50
+}
+
+current_order = {}
+
+# ---------- CORE FUNCTIONS ----------
+def add_to_order(item, qty):
+    if item not in menu:
+        return False
+    if qty is None or qty <= 0:
+        return False
+    current_order[item] = current_order.get(item, 0) + qty
+    return True
+
+def compute_bill(discount_rate=0.0):
+    if not current_order:
+        return 0.0, 0.0, 0.0
+    subtotal = sum(menu[item] * qty for item, qty in current_order.items())
+    discount = subtotal * discount_rate
+    total = subtotal - discount
+    return subtotal, discount, total
+
+def build_receipt_lines(subtotal, discount, total, discount_rate):
+    lines = [
+        "RECEIPT:",
+        "",
+        f"  Date: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}",
+        "",
+        f"  {'Item':<12}{'Qty':<6}{'Price':<10}{'Total'}",
+        "  " + "-" * (WIDTH - 8),
+    ]
+    for item, qty in current_order.items():
+        price = menu[item]
+        lines.append(f"  {item:<12}{qty:<6}${price:<9.2f}${price * qty:.2f}")
+    lines.append("  " + "-" * (WIDTH - 8))
+    lines.append(f"  Subtotal: ${subtotal:.2f}")
+    if discount > 0:
+        lines.append(f"  Discount ({discount_rate*100:.0f}%): -${discount:.2f}")
+    lines.append(f"  Total: ${total:.2f}")
+    return lines
+
+def clear_order():
+    current_order.clear()
+
+# ---------- MENU ----------
+def main():
+    print(BANNER)
+    print("      Terminal Restaurant Order Management System".center(WIDTH))
+    print()
+
+    while True:
+        print_boxed([
+            "  [1] Display Menu",
+            "  [2] Take Order",
+            "  [3] Calculate Bill",
+            "  [4] Generate Receipt",
+            "  [5] Exit"
+        ])
+        option = input("> Enter option: ").strip()
+
+        if option == "1":
+            lines = ["RESTAURANT MENU:", ""]
+            for item, price in menu.items():
+                lines.append(f"  {item:<12}: ${price:.2f}")
+            print()
+            print_boxed(lines)
+            print()
+
+        elif option == "2":
+            clear_order()
+            print()
+            print_boxed(["Enter item name (or 'done' to finish)."])
+            print()
+            while True:
+                item = input("> Item (or 'done'): ").strip().title()
+                if item == 'Done':
+                    break
+                if item not in menu:
+                    print_boxed([f"ERROR: '{item}' not in menu. Check spelling."])
+                    print()
+                    continue
+                try:
+                    qty = int(input(f"> Qty for {item}: ").strip())
+                except ValueError:
+                    print_boxed(["ERROR: Quantity must be a number."])
+                    print()
+                    continue
+                if qty <= 0:
+                    print_boxed(["ERROR: Quantity must be positive."])
+                    print()
+                    continue
+                add_to_order(item, qty)
+                print_boxed([f"{qty} x {item} added."])
+                print()
+            if current_order:
+                lines = ["ORDER TAKEN:", ""]
+                for item, qty in current_order.items():
+                    lines.append(f"  {qty} x {item}")
+                print()
+                print_boxed(lines)
+                print()
+            else:
+                print()
+                print_boxed(["Order is empty."])
+                print()
+
+        elif option == "3":
+            if not current_order:
+                print()
+                print_boxed(["ERROR: No items in order. Take an order first."])
+                print()
+                continue
+            choice = input("> Apply discount? (yes/no): ").strip().lower()
+            discount_rate = 0.0
+            if choice == 'yes':
+                try:
+                    pct = float(input("> Discount percentage (0-100): ").strip())
+                    if not 0 <= pct <= 100:
+                        print()
+                        print_boxed(["ERROR: Discount must be 0-100."])
+                        print()
+                        continue
+                    discount_rate = pct / 100
+                except ValueError:
+                    print()
+                    print_boxed(["ERROR: Invalid discount."])
+                    print()
+                    continue
+            elif choice != 'no':
+                print()
+                print_boxed(["ERROR: Enter 'yes' or 'no'."])
+                print()
+                continue
+            subtotal, discount, total = compute_bill(discount_rate)
+            lines = [f"  Subtotal: ${subtotal:.2f}"]
+            if discount > 0:
+                lines.append(f"  Discount ({discount_rate*100:.0f}%): -${discount:.2f}")
+            lines.append(f"  Total Bill: ${total:.2f}")
+            print()
+            print_boxed(["BILL:", ""] + lines)
+            print()
+
+        elif option == "4":
+            if not current_order:
+                print()
+                print_boxed(["ERROR: No items in order. Take an order first."])
+                print()
+                continue
+            choice = input("> Apply discount? (yes/no): ").strip().lower()
+            discount_rate = 0.0
+            if choice == 'yes':
+                try:
+                    pct = float(input("> Discount percentage (0-100): ").strip())
+                    if not 0 <= pct <= 100:
+                        print()
+                        print_boxed(["ERROR: Discount must be 0-100."])
+                        print()
+                        continue
+                    discount_rate = pct / 100
+                except ValueError:
+                    print()
+                    print_boxed(["ERROR: Invalid discount."])
+                    print()
+                    continue
+            elif choice != 'no':
+                print()
+                print_boxed(["ERROR: Enter 'yes' or 'no'."])
+                print()
+                continue
+            subtotal, discount, total = compute_bill(discount_rate)
+            print()
+            print_boxed(build_receipt_lines(subtotal, discount, total, discount_rate))
+            print()
+            clear_order()
+
+        elif option == "5":
+            print()
+            print_boxed(["Goodbye!"])
+            print()
+            break
+
+        else:
+            print_boxed(["Invalid option, try again."])
+            print()
+
+if __name__ == "__main__":
+    main()

@@ -1,0 +1,238 @@
+# =====================================================
+#  STUDENT RESULT MANAGEMENT SYSTEM  (menu-driven project)
+#  Add Student / Add Marks / Calculate Grades / Display Results
+# =====================================================
+
+WIDTH = 100
+
+BANNER = r"""
+███████╗████████╗██╗   ██╗██████╗ ███████╗███╗   ██╗████████╗
+██╔════╝╚══██╔══╝██║   ██║██╔══██╗██╔════╝████╗  ██║╚══██╔══╝
+███████╗   ██║   ██║   ██║██║  ██║█████╗  ██╔██╗ ██║   ██║
+╚════██║   ██║   ██║   ██║██║  ██║██╔══╝  ██║╚██╗██║   ██║
+███████║   ██║   ╚██████╔╝██████╔╝███████╗██║ ╚████║   ██║
+╚══════╝   ╚═╝    ╚═════╝ ╚═════╝ ╚══════╝╚═╝  ╚═══╝   ╚═╝
+██████╗ ███████╗███████╗██╗   ██╗██╗  ████████╗
+██╔══██╗██╔════╝██╔════╝██║   ██║██║  ╚══██╔══╝
+██████╔╝█████╗  ███████╗██║   ██║██║     ██║
+██╔══██╗██╔══╝  ╚════██║██║   ██║██║     ██║
+██║  ██║███████╗███████║╚██████╔╝███████╗██║
+╚═╝  ╚═╝╚══════╝╚══════╝ ╚═════╝ ╚══════╝╚═╝
+"""
+
+# ---------- BOX DRAWING ----------
+def box_top(w=WIDTH):
+    return "╔" + "═" * (w - 2) + "╗"
+
+def box_bottom(w=WIDTH):
+    return "╚" + "═" * (w - 2) + "╝"
+
+def box_divider(w=WIDTH):
+    return "╠" + "═" * (w - 2) + "╣"
+
+def box_line(text, w=WIDTH):
+    pad = max(w - 4 - len(text), 0)
+    return f"║ {text}{' ' * pad} ║"
+
+def print_boxed(lines, w=WIDTH):
+    print(box_top(w))
+    for line in lines:
+        print(box_line(line, w))
+    print(box_bottom(w))
+
+# ---------- DATA ----------
+all_students = {}
+ROLLS = []
+
+# ---------- CORE FUNCTIONS ----------
+def get_percentage(roll):
+    subjects = all_students[roll]['results']
+    if not subjects:
+        return 0.0
+    return sum(subjects.values()) / len(subjects)
+
+def get_grade(roll):
+    subjects = all_students[roll]['results']
+    if not subjects:
+        return "N/A"
+    percentage = sum(subjects.values()) / len(subjects)
+    if percentage >= 90:
+        return "A"
+    elif percentage >= 75:
+        return "B"
+    elif percentage >= 50:
+        return "C"
+    else:
+        return "F"
+
+def add_student_data(roll, name, section, course, year):
+    if roll in ROLLS:
+        return False
+    ROLLS.append(roll)
+    all_students[roll] = {
+        "name": name,
+        "section": section,
+        "course": course,
+        "year": year,
+        "results": {}
+    }
+    return True
+
+def add_marks_data(roll, subject, marks):
+    if roll not in ROLLS:
+        return False
+    if not 0 <= marks <= 100:
+        return False
+    all_students[roll]["results"][subject] = marks
+    return True
+
+def calculate_merit(roll):
+    if roll not in ROLLS or not all_students[roll]['results']:
+        return None
+    percentage = get_percentage(roll)
+    grade = get_grade(roll)
+    all_students[roll]["merit"] = {"percentage": percentage, "grade": grade}
+    return percentage, grade
+
+def format_report(roll):
+    data = all_students[roll]
+    lines = [
+        f"  Roll    : {roll}",
+        f"  Name    : {data['name']}",
+        f"  Section : {data['section']}",
+        f"  Course  : {data['course']}",
+        f"  Year    : {data['year']}",
+        "",
+        "  Subjects & Marks:",
+    ]
+    if data['results']:
+        for subject, marks in data['results'].items():
+            lines.append(f"    - {subject}: {marks}")
+    else:
+        lines.append("    No subjects added yet.")
+    lines.append("")
+    if 'merit' in data:
+        lines.append(f"  Percentage : {data['merit']['percentage']:.2f}%")
+        lines.append(f"  Grade      : {data['merit']['grade']}")
+    else:
+        lines.append("  Grades not yet calculated.")
+    return lines
+
+# ---------- MENU ----------
+def main():
+    print(BANNER)
+    print("      Terminal Student Result Management System".center(WIDTH))
+    print()
+
+    while True:
+        print_boxed([
+            "  [1] Add New Student",
+            "  [2] Add Subject Marks",
+            "  [3] Calculate Grades",
+            "  [4] Display Student Results",
+            "  [5] Exit"
+        ])
+        option = input("> Enter option: ").strip()
+
+        if option == "1":
+            roll = input("> Enter student roll: ").strip()
+            if not roll:
+                print()
+                print_boxed(["ERROR: Roll cannot be empty."])
+                print()
+                continue
+            if roll in ROLLS:
+                print()
+                print_boxed([f"ERROR: Student with roll {roll} already exists."])
+                print()
+                continue
+            name = input("> Enter student name: ").strip()
+            section = input("> Enter student section: ").strip()
+            course = input("> Enter student course: ").strip()
+            year = input("> Enter student year: ").strip()
+            add_student_data(roll, name, section, course, year)
+            print()
+            print_boxed([
+                "STUDENT ADDED:",
+                "",
+                f"  Name : {name}",
+                f"  Roll : {roll}",
+            ])
+            print()
+
+        elif option == "2":
+            roll = input("> Enter student roll: ").strip()
+            if roll not in ROLLS:
+                print()
+                print_boxed(["ERROR: Roll not in database."])
+                print()
+                continue
+            subject = input("> Enter subject name: ").strip()
+            if not subject:
+                print()
+                print_boxed(["ERROR: Subject cannot be empty."])
+                print()
+                continue
+            try:
+                marks = float(input(f"> Enter marks for {subject} (0-100): ").strip())
+            except ValueError:
+                print()
+                print_boxed(["ERROR: Invalid marks. Enter a number."])
+                print()
+                continue
+            if not 0 <= marks <= 100:
+                print()
+                print_boxed(["ERROR: Marks must be between 0 and 100."])
+                print()
+                continue
+            add_marks_data(roll, subject, marks)
+            print()
+            print_boxed([f"Marks for {subject} added for student {roll}."])
+            print()
+
+        elif option == "3":
+            roll = input("> Enter student roll to calculate grades: ").strip()
+            if roll not in ROLLS:
+                print()
+                print_boxed(["ERROR: Roll not in database."])
+                print()
+                continue
+            if not all_students[roll]['results']:
+                print()
+                print_boxed([f"No subjects added for student {roll}."])
+                print()
+                continue
+            percentage, grade = calculate_merit(roll)
+            print()
+            print_boxed([
+                "GRADES CALCULATED:",
+                "",
+                f"  Roll       : {roll}",
+                f"  Percentage : {percentage:.2f}%",
+                f"  Grade      : {grade}",
+            ])
+            print()
+
+        elif option == "4":
+            roll = input("> Enter student roll to display results: ").strip()
+            if roll not in ROLLS:
+                print()
+                print_boxed(["ERROR: Roll not in database."])
+                print()
+                continue
+            print()
+            print_boxed(format_report(roll))
+            print()
+
+        elif option == "5":
+            print()
+            print_boxed(["Goodbye!"])
+            print()
+            break
+
+        else:
+            print_boxed(["Invalid option, try again."])
+            print()
+
+if __name__ == "__main__":
+    main()
