@@ -1,0 +1,742 @@
+================================================================
+ COA CT1 - COMPLETE ANSWERS (Class Questions)
+================================================================
+ Format : Plain TXT, ASCII only, max 68 chars per line.
+          Readable on mobile / Notepad / any device.
+ Legend :
+   Q.      = Question
+   Ans.    = Answer (3-5 marks, exam ready)
+   FIG.    = ASCII diagram (monospace font best)
+   STEPS:  = Numerical method, follow same steps
+
+
+================================================================
+ PART A : 28/07/2026 - BASICS, ISA, CONTROL
+================================================================
+
+
+ Q1. Define the term Control Unit.
+
+ Ans.
+  Control Unit (CU) is the brain that controls all
+  parts of CPU. It does NOT do calculation itself.
+  It tells ALU, memory, I/O what to do and when.
+  Functions:
+  1. Fetch instruction from memory.
+  2. Decode it.
+  3. Send control signals to ALU, registers, bus.
+  4. Maintain timing (with clock).
+  Types: Hardwired (fast) and Microprogrammed
+  (flexible). Ex: like a traffic police.
+
+
+ Q2. Discuss any 3 types of memory used in computer.
+
+ Ans.
+  1. RAM (Random Access Memory):
+     Volatile, temporary. Holds running program.
+     Ex: 8 GB DDR4. Two types: SRAM (fast,
+     cache) and DRAM (main memory).
+  2. ROM (Read Only Memory):
+     Non-volatile, permanent. Holds boot code
+     (BIOS). Cannot easily change.
+  3. Cache Memory:
+     Very fast, small, between CPU and RAM.
+     Stores frequently used data. Level L1/L2/L3.
+  Extra for 5 marks: Secondary (SSD/HDD, large,
+  slow, permanent) and Registers (smallest,
+  fastest, inside CPU).
+
+
+ Q3. Basic components of Instruction Execution Cycle.
+
+ Ans.
+  Also called Fetch-Decode-Execute cycle.
+  1. Fetch: PC holds address. CU fetches
+     instruction from memory to IR. PC = PC + 1.
+  2. Decode: CU decodes opcode, finds operands
+     and addressing mode.
+  3. Fetch Operands: Get data from registers /
+     memory if needed.
+  4. Execute: ALU does operation or data moves.
+  5. Store/Writeback: Result stored in register
+     or memory.
+
+ FIG. Cycle:
+ --------------------
+  [PC] -> Fetch -> [IR]
+           |
+         Decode
+           |
+     Fetch Operands
+           |
+        Execute
+           |
+      Store Result
+           |
+       (repeat)
+ --------------------
+
+
+ Q4. What is Instruction Set Architecture (ISA)?
+
+ Ans.
+  ISA is the boundary between software and
+  hardware. It defines what the programmer sees:
+  1. Instructions (ADD, SUB, LOAD, STORE).
+  2. Registers, memory addressing.
+  3. Data types, addressing modes.
+  4. I/O handling.
+  Ex: x86 (Intel), ARM (mobile), RISC-V.
+  ISA does NOT say how it is built (that is
+  microarchitecture). Same ISA can have many
+  different CPUs.
+
+
+ Q5. Any 3 common addressing modes with example.
+
+ Ans.
+  Addressing mode = how to find operand.
+  1. Immediate: data is in instruction itself.
+     Ex: MOV R1, #5  (R1 = 5)
+  2. Direct: address given. Ex: LOAD R1, [100]
+     (R1 = Memory[100])
+  3. Register: operand in register.
+     Ex: ADD R3, R1, R2 (R3 = R1 + R2)
+  4. (extra) Indirect: address holds address.
+     Ex: MOV R1, @R2.
+  5. (extra) Indexed: base + offset for arrays.
+
+
+ Q6. Use of Implied, Immediate, Stack addressing
+     mode with example.
+
+ Ans.
+  1. Implied: operand is hidden/fixed. No address
+     field needed. Saves bits.
+     Ex: CLC (clear carry), RET. CPU knows what
+     to do without extra data.
+  2. Immediate: fast, no memory access.
+     Ex: MOV R1, #10. Use: constants, counters.
+  3. Stack: operands on top of stack (PUSH/POP).
+     0-address machine. Good for expression
+     evaluation and subroutine calls.
+     Ex: PUSH A, PUSH B, ADD (pops 2, pushes sum).
+
+
+ Q7. Registers initially 0. Find R1 after sequence:
+     MOV R1,#6 / MOV R2,#5 / ADD R3,R1,R1
+     SUB R1,R3,R2 / MULT R3,R1,R1
+
+ STEPS:
+ --------------------
+  Start: R1=0, R2=0, R3=0
+  1. MOV R1,#6   -> R1 = 6
+  2. MOV R2,#5   -> R2 = 5
+  3. ADD R3,R1,R1-> R3 = 6+6 = 12
+  4. SUB R1,R3,R2-> R1 = 12-5 = 7
+  5. MULT R3,R1,R1 -> R3 = 7*7 = 49
+                   R1 stays 7
+  Final: R1 = 7, R2 = 5, R3 = 49
+ --------------------
+ Ans. R1 = 7.
+
+
+ Q8. Follow RTL method to describe instruction
+     at R1, R2. (Register Transfer Language)
+
+ Ans.
+  RTL shows data movement per clock.
+  General form: T0, T1... for each micro-step.
+  Example for ADD R1, R2 (R1 = R1 + R2):
+ --------------------
+  T0: MAR <- PC, PC <- PC + 1
+  T1: IR <- M[MAR], decode ADD
+  T2: A <- R1        (copy R1 to temp A)
+  T3: B <- R2        (copy R2 to temp B)
+  T4: R1 <- A + B    (ALU add, store in R1)
+ --------------------
+  For MOV R1, R2: R1 <- R2 in one transfer.
+  For LOAD R1, [X]: MAR <- X, R1 <- M[MAR].
+
+
+ Q9. Explain Instruction Cycle, Machine Cycle,
+     T-State.
+
+ Ans.
+  T-State: one clock pulse. Smallest unit.
+           Ex: transfer one byte.
+  Machine Cycle: group of T-states for one bus
+           operation (fetch, read, write).
+           Ex: Fetch = 4 T-states.
+  Instruction Cycle: full fetch+decode+execute
+           of one instruction = many machine
+           cycles.
+
+ FIG.
+ --------------------
+  T - T - T - T  = 1 Machine Cycle
+  (T-states)
+  M1 + M2 + M3   = 1 Instruction Cycle
+  (Fetch+Decode+Execute)
+ --------------------
+
+
+ Q10. Compare Hardware vs Microprogrammed CU.
+
+ Ans.
+  Hardware CU        | Microprogrammed CU
+  -------------------+-------------------
+  Made of gates,     | Made of memory
+  flip-flops         | (control store)
+  Fast               | Slower
+  Hard to change     | Easy to change
+  (rewire needed)    | (rewrite code)
+  RISC uses this     | CISC uses this
+  Costly for complex | Cheap for complex
+  No control memory  | Needs control memory
+
+
+ Q11. Why memory is organized as hierarchy?
+
+ Ans.
+  CPU is fast, disk is large but slow. We cannot
+  get fast + large + cheap in one memory, so we
+  layer them.
+  Top (fast, small, costly): Registers, Cache.
+  Middle: RAM.
+  Bottom (slow, large, cheap): SSD/HDD, Tape.
+
+ FIG. Hierarchy (top = fastest):
+ --------------------
+   Registers (1 KB, fastest)
+        |
+   Cache L1/L2/L3
+        |
+   Main Memory RAM (GB)
+        |
+   SSD / HDD (TB, slow)
+        |
+   Tape / Cloud (slowest)
+ --------------------
+  Advantage: average speed ~ cache, average cost
+  ~ disk, size ~ disk. Uses locality principle.
+
+
+ Q12. Advantages and disadvantages of RISC.
+
+ Ans.
+  RISC = Reduced Instruction Set, simple fixed
+  instructions, LOAD/STORE only.
+  Advantages:
+  1. Fast (1 instruction per cycle, pipelining).
+  2. Simple hardware, less power (mobile/ARM).
+  3. Easy to optimize compiler.
+  Disadvantages:
+  1. More instructions needed for complex task.
+  2. Larger code size.
+  3. Needs more registers, good compiler.
+
+
+ Q13. LOAD and STORE architecture + pros/cons.
+
+ Ans.
+  Rule: Only LOAD/STORE touch memory. All ALU
+  ops use registers.
+  Ex: LOAD R1,[X], ADD R3,R1,R2, STORE [Y],R3.
+  Advantages: simple, fast pipeline, RISC style.
+  Disadvantages: more instructions, needs many
+  registers, not good if few registers.
+
+
+ Q14. Why stack is not generally implemented using
+      processor register file?
+
+ Ans.
+  1. Stack depth is unknown (calls can nest deep).
+     Register file is small (16-32 regs).
+  2. Stack needs PUSH/POP with auto pointer (SP),
+     registers need explicit address.
+  3. Subroutine + interrupt can overflow regs.
+  4. Memory stack is large and cheap. So stack in
+     memory + SP register is better. Registers
+     used for top 1-2 values only (stack cache).
+
+
+ Q15. Role of stack in subroutine.
+
+ Ans.
+  1. Saves return address (CALL pushes PC, RET
+     pops PC).
+  2. Saves registers (callee-saved).
+  3. Passes parameters and local variables
+     (stack frame).
+  4. Supports nesting/recursion (each call gets
+     new frame).
+  Ex: CALL F -> PUSH PC, jump. RET -> POP PC.
+
+
+ Q16. Different types of ROMs.
+
+ Ans.
+  1. PROM: write once, cannot erase.
+  2. EPROM: erase by UV light, re-write.
+  3. EEPROM: erase electrically (byte-wise).
+  4. Flash: fast EEPROM, block erase (pen drive).
+  5. Mask ROM: factory fixed, cheapest for mass.
+  All are non-volatile.
+
+
+ Q17. Computer Organization vs Architecture.
+
+ Ans.
+  Architecture (WHAT): programmer view. ISA,
+  registers, addressing, data types. Ex: Intel
+  vs ARM instruction set.
+  Organization (HOW): hardware implementation.
+  ALU design, control signals, pipeline, cache
+  size. Ex: how ADD is done inside.
+  Example: Same architecture (x86) can have
+  different organization (i5 vs i7).
+
+
+ Q18. Block diagram of digital computer + function.
+
+ FIG.
+ --------------------
+          +----------------+
+          |  INPUT (kbd)   |
+          +-------+--------+
+                  |
+          +-------v--------+
+          |    MEMORY      |
+          | RAM+ROM+Cache  |
+          +-------+--------+
+                  |
+   +--------------+--------------+
+   |              CPU            |
+   |  +--------+   +---------+   |
+   |  |   CU   |<->|  ALU    |   |
+   |  +--------+   +---------+   |
+   |       ^       +---------+   |
+   |       |       | REGS    |   |
+   |       +-------+         |   |
+   +---------------------------+
+                  |
+          +-------v--------+
+          | OUTPUT (screen)|
+          +----------------+
+ --------------------
+  1. Input: takes data in.
+  2. Memory: stores program + data.
+  3. CU: controls flow (see Q1).
+  4. ALU: + - * / AND OR.
+  5. Registers: fast temp storage.
+  6. Output: shows result.
+  7. Buses connect all (address/data/control).
+
+
+ Q19. Define 3, 2, 1, 0 address instructions.
+
+ Ans.
+  3-address: OP DEST,SRC1,SRC2. Ex: ADD R3,R1,R2.
+             Short program, many bits.
+  2-address: OP DEST,SRC. Ex: ADD R1,R2 (R1=R1+R2).
+             Needs fewer bits, destroys one input.
+  1-address: Accumulator. Ex: LOAD A, ADD X (A=A+X).
+             Needs accumulator register.
+  0-address: Stack. Ex: PUSH A, PUSH B, ADD.
+             No address, implicit top of stack.
+
+
+ Q20. RISC vs CISC.
+
+ Ans.
+  RISC               | CISC
+  -------------------+-------------------
+  Few simple instr   | Many complex instr
+  Fixed length       | Variable length
+  LOAD/STORE only    | Memory direct allowed
+  Many registers     | Few registers
+  Hardwired CU       | Microprogrammed CU
+  Ex: ARM, RISC-V    | Ex: x86 Intel
+  Fast pipeline      | Compact code
+
+
+ Q21. Harvard vs Von Neumann (+ what are they).
+
+ Ans.
+  Von Neumann: ONE memory for code + data, one
+  bus. Simple, cheap, but bottleneck (cannot
+  fetch code and data together).
+  Harvard: SEPARATE code and data memory + buses.
+  Fast (parallel fetch), used in microcontrollers
+  and cache (split I-cache/D-cache).
+
+ FIG.
+ --------------------
+  Von Neumann:
+   CPU <--bus--> [Mem: Code+Data]
+
+  Harvard:
+   CPU <--bus1--> [Code Mem]
+   CPU <--bus2--> [Data Mem]
+ --------------------
+  Modern PC = Von Neumann outside, Harvard inside
+  (split cache).
+
+
+================================================================
+ PART B : 26/08/2026 - ARITHMETIC + IEEE + ADDERS
+================================================================
+
+
+ Q22. Fixed point vs floating point with example.
+
+ Ans.
+  Fixed point: decimal point fixed. Integer part
+  + fraction bits fixed. Ex: 8.8 format. Fast,
+  but small range. Use: DSP, money (no error).
+  Ex: 5.75 = 0101.11 (binary).
+  Floating point: M x B^E (mantissa x base^exp).
+  Ex: 5.75 = 1.4375 x 2^2. Large range, IEEE 754
+  standard. Use: science, graphics. Needs FPU,
+  rounding error possible.
+
+
+ Q23. Overflow and underflow in binary arithmetic.
+
+ Ans.
+  Overflow: result too LARGE to fit. Ex: 8-bit
+  signed max 127, 100+50=150 -> wraps to -106.
+  Detected by: carry-in != carry-out at MSB.
+  Underflow: result too SMALL (near zero) or
+  negative borrow. In floating: number smaller
+  than smallest normal -> becomes 0/denormal.
+  Ex: 0 - 1 in unsigned 8-bit -> 255 (borrow).
+  Fix: use bigger width, saturation, flags (V).
+
+
+ Q24. Compare Ripple Carry vs Carry Lookahead Adder.
+
+ Ans.
+  Ripple (RCA)       | Lookahead (CLA)
+  -------------------+-------------------
+  Carry ripples one  | Carry computed in
+  by one             | parallel (G,P logic)
+  Slow O(n), simple  | Fast O(log n), complex
+  Few gates          | Many gates
+  Use: small/slow    | Use: CPU ALU, fast add
+  4-bit delay ~4*FA  | 4-bit delay ~2 levels
+
+
+ Q25. Convert 10.625 to IEEE 754 single + double.
+
+ STEPS:
+ --------------------
+  Step 1: Binary.
+   10 = 1010, 0.625 = 0.101 (0.5+0.125)
+   So 10.625 = 1010.101
+  Step 2: Normalize.
+   1010.101 = 1.010101 x 2^3
+   Exponent e = 3, Mantissa = 010101...
+  Step 3a: Single (32-bit).
+   Sign = 0 (+ve)
+   Exp = 127+3 = 130 = 10000010
+   Mantissa = 010101 + 17 zeros (23 bits)
+   Bits:
+   0 | 10000010 | 01010100000000000000000
+   Hex = 0x412A0000
+  Step 3b: Double (64-bit).
+   Sign = 0
+   Exp = 1023+3 = 1026 = 10000000010 (11 bits)
+   Mantissa = 010101 + 46 zeros (52 bits)
+   Hex = 0x4025400000000000
+ --------------------
+ Ans. Single: 0x412A0000, Double: 0x4025400000000000.
+
+
+ Q26. Signed Magnitude vs 2's Complement.
+
+ Ans.
+  Signed Mag: MSB = sign, rest = magnitude.
+   Ex: +5=0101, -5=1101 (4-bit). Two zeros
+   (+0=0000,-0=1000). Add needs separate logic.
+  2's Comp: negative = invert + 1.
+   Ex: -5 = 1011. One zero. Add/sub same circuit.
+   Range bigger: 4-bit -8 to +7 vs -7 to +7.
+  Use: modern CPUs use 2's complement.
+
+
+ Q27. Any one method of binary division + example.
+
+ Ans. Restoring Division (like long division):
+  Rules: Shift left, subtract divisor, if negative
+  restore (add back) and Q0=0, else Q0=1.
+  Example: 7 / 3 (0111 / 0011):
+ --------------------
+  A=0000, Q=0111, M=0011
+  Loop 4 times: shift AQ left, A=A-M
+   if A<0: Q0=0, A=A+M (restore)
+   else: Q0=1
+  Result: Q=0010 (2), A=0001 (rem 1)
+  So 7/3 = Q2 rem1
+ --------------------
+  Non-restoring is faster (no restore, add next).
+
+
+ Q28. NaN and +Infinity in IEEE 754 standard.
+      (Q says 745, means 754)
+
+ Ans.
+  Single: 1 sign + 8 exp + 23 mantissa.
+  Exp = 255 (all 1) is special:
+  1. Infinity: exp=all1, mantissa=0.
+     +INF = 0x7F800000, -INF = 0xFF800000.
+     Comes from 1/0, overflow.
+  2. NaN (Not a Number): exp=all1, mantissa!=0.
+     Ex: 0/0, sqrt(-1). Quiet vs Signaling NaN.
+  3. Zero: exp=0, mantissa=0 (two zeros).
+  4. Denormal: exp=0, mantissa!=0 (tiny nos).
+
+
+ Q29. 16-bit custom float: 1 sign + 6 exp + 9
+      mantissa, hidden 1. Represent -1.6 x 10^63.
+
+ STEPS:
+ --------------------
+  Given: S=1 bit, E=6 bits, M=9 bits.
+  Bias = 2^(6-1)-1 = 31.
+  Max normal exp (biased 63, but 63 reserved
+  for INF/NaN) so max usable ~62.
+  True max exp = 62-31 = 31.
+  Max value ~ 2^32 ~ 4.29 x 10^9.
+  Wanted: 1.6 x 10^63 ~ 2^209 (since
+  10^63 = (2^10)^6.3 ~ 2^209).
+  Needed exp 209 >> 31.
+  So OVERFLOW. Cannot fit.
+  Representation = Infinity:
+   S=1, E=111111, M=000000000
+   Bits: 1 111111 000000000
+   Hex: 0xFC00
+  If question meant -1.61063 (small), then:
+   -1.61063 ~ -1.10011 x 2^0
+   S=1, E=31=011111, M=100110... (9 bits)
+   Bits: 1 011111 100110000 (approx)
+ --------------------
+ Ans. Given value overflows; stored as -INF.
+  Show bias calc + comparison for full marks.
+
+
+ Q30. Best/worst case of Booth's algorithm.
+
+ Ans.
+  Booth handles strings of 1s fast.
+  Best case: long runs of 0s or 1s. Ex: 01111000
+  needs only 2 ops (instead of 4 adds). Few
+  transitions 0->1, 1->0.
+  Worst case: alternating 010101... Every bit
+  causes add+sub. Same or slower than normal.
+  So Booth best for regular multipliers, worst
+  for alternating pattern. Modern Booth-2/3
+  reduces worst case.
+
+
+ Q31. Find value in IEEE single precision format.
+      (No bits given in list, method + example)
+
+ STEPS (use this for any bits):
+ --------------------
+  1. Split: S (1) | E (8) | M (23).
+  2. Exp_true = E_biased - 127.
+  3. Value = (-1)^S x 1.M x 2^Exp_true.
+  Example: 0x412A0000:
+   Binary: 0 10000010 0101010...
+   S=0, E=130, M=1.010101
+   Exp_true = 130-127 = 3
+   Value = 1.010101 x 2^3 = 1010.101 = 10.625
+ --------------------
+  Tip: If E=255,M=0 -> INF. If E=255,M!=0 -> NaN.
+  If E=0 -> denormal/zero.
+
+
+ Q32. Describe 4-bit Ripple Carry Adder.
+
+ FIG.
+ --------------------
+  A3B3   A2B2   A1B1   A0B0
+   |      |      |      |
+  FA3 <- FA2 <- FA1 <- FA0
+   |      |      |      |
+   S3     S2     S1     S0
+  C4 <--- C3 <-- C2 <-- C1 <-- C0=0
+ --------------------
+  Each FA: Si = Ai xor Bi xor Ci,
+           Ci+1 = AiBi + Ci(Ai xor Bi).
+  C ripples 0->4. Delay = 4 x FA delay.
+  Simple but slow. Use for small adders.
+
+
+ Q33. Flowchart for Booth multiplication.
+
+ FIG. (ASCII flowchart):
+ --------------------
+   START
+     |
+   A=0, Q=multiplier, M=multiplicand
+   Q-1=0, Count=n
+     |
+   +--<Count>0?--No--> STOP (Ans=A,Q)
+   |     |
+   |    Yes
+   |     |
+   |   Q0,Q-1 = ?
+   |   00/11: ASR(A,Q,Q-1)
+   |   01: A=A+M, then ASR
+   |   10: A=A-M, then ASR
+   |     |
+   |   Count--
+   |     |
+   +-----+
+ --------------------
+  ASR = arithmetic shift right (sign kept).
+  n steps for n-bit numbers.
+
+
+ Q34. Solve 14/3 using restoring and non-restoring.
+
+ STEPS (4-bit, 14=1110, 3=0011):
+ --------------------
+  RESTORING (A=0000,Q=1110,M=0011, n=4):
+  1. SHL AQ, A=A-M. If A<0 restore+A, Q0=0
+     else Q0=1. Repeat 4x.
+  Cycle1: AQ=11100 -> A=1101(-3) <0 -> restore
+          A=0000, Q=1100
+  Cycle2: AQ=00001.. -> A=0001-0011=-2 <0
+          restore A=0001, Q=1000
+  Cycle3: AQ=00101.. -> A=0010-0011=-1 <0
+          restore A=0010, Q=0000? (track)
+  Cycle4: final Q=0100 (4), A=0010 (2).
+  Result: Q=4, R=2. Check 3*4+2=14 OK.
+  NON-RESTORING:
+  Same start, but if A<0, NO restore.
+  Next step ADD M instead of SUB.
+  Rule: if A>=0: SHL, SUB, Q0=1 if OK else 0
+        if A<0: SHL, ADD, Q0=0/1 similarly.
+  Final correction: if A<0, A=A+M.
+  Same answer Q=0100, R=0010, fewer adds.
+ --------------------
+  Exam tip: draw 4-row table A-Q-action. Final
+  line Q and R gets marks even if middle short.
+
+
+ Q35. M=0110 (6), Q=0011 (3), perform Booth.
+
+ STEPS (4-bit, n=4, M=0110, -M=1010):
+ --------------------
+  Init: A=0000, Q=0011, Q-1=0, C=4
+  C1: Q0Q-1=10 -> A=A-M=1010, ASR ->
+      A=1101,Q=0001,Q-1=1
+  C2: 11 -> ASR only ->
+      A=1110,Q=1000,Q-1=1
+  C3: 01 -> A=A+M=0100, ASR ->
+      A=0010,Q=0100,Q-1=0
+  C4: 00 -> ASR only ->
+      A=0001,Q=0010,Q-1=0
+  Result: A_Q = 0001 0010 = 0x12 = 18.
+  So 6 x 3 = 18. OK.
+ --------------------
+
+
+ Q36. How non-restoring derived from restoring?
+
+ Ans.
+  Restoring wastes one add (subtract then add
+  back when A<0). Observe:
+  Restore (A+M) + next shift+subtract = 2A+M-M...
+  Algebra gives: instead of restore, just ADD M
+  after shift in next step.
+  So: keep negative A, next cycle do A = 2A + M
+  (instead of 2(A+M)-M = 2A+M). One operation
+  saved per 0-bit. Needs final correction if A
+  negative at end. Faster, same hardware + mux.
+
+
+ Q37. Propagation delay + reduce with CLA.
+
+ Ans.
+  Propagation delay = time for input change to
+  appear at output (gate delays add up). In RCA,
+  carry must ripple through n FAs, so delay =
+  n x t_FA (~2n gate levels). Long for 32-bit.
+  CLA reduces by computing all carries in
+  parallel with Generate/Propagate logic (2-level
+  AND-OR), so delay ~ 2-3 gates independent of n
+  (for 4-bit block). Groups + hierarchy for
+  bigger widths.
+
+
+ Q38. Why CLA is called fast parallel adder?
+
+ Ans.
+  Because it does NOT wait for previous carry.
+  All carries C1..C4 made together from inputs
+  using G,P equations. Parallel = O(1) delay vs
+  RCA O(n). So addition of 4/16/32 bits takes
+  almost same short time. Cost: more gates.
+
+
+ Q39. Carry generation equation for 4-bit CLA.
+
+ Ans.
+  For bit i: Gi = Ai . Bi (generate),
+             Pi = Ai xor Bi (propagate).
+  C0 given.
+  C1 = G0 + P0.C0
+  C2 = G1 + P1.G0 + P1.P0.C0
+  C3 = G2 + P2.G1 + P2.P1.G0 + P2.P1.P0.C0
+  C4 = G3 + P3.G2 + P3.P2.G1 + P3.P2.P1.G0
+       + P3.P2.P1.P0.C0
+  Sum: Si = Pi xor Ci.
+  All C computed in 2 levels (AND then OR).
+
+
+ Q40. From full adder, define Gi, Pi, parallel use.
+
+ Ans.
+  Full adder carry: Ci+1 = AiBi + Ci(Ai+Bi).
+  Define: Gi = Ai.Bi (creates carry alone),
+          Pi = Ai xor Bi (passes Ci forward).
+  Then Ci+1 = Gi + Pi.Ci.
+  Expand (see Q39) to get all C without waiting.
+  Hardware: G,P made in 1 gate, then 2-level
+  AND-OR for each C, then XOR for sum. Parallel
+  because Ci does not need Ci-1 output, only
+  original A,B,C0.
+
+
+ Q41. Advantages/disadvantages of Booth (speed +
+      hardware).
+
+ Ans.
+  Advantages:
+  1. Fewer adds for runs of 1s (fast average).
+  2. Handles signed numbers directly (no separate
+     correction).
+  3. Regular structure, good for VLSI.
+  Disadvantages:
+  1. Worst case (0101..) slower than normal.
+  2. Needs extra register (Q-1) + control + ASR.
+  3. Variable time (data dependent) unless
+     modified Booth. More complex than simple
+     shift-add.
+
+================================================================
+ END OF FILE
+================================================================
+ Tips:
+  1. For 5 marks draw FIG. + 4-5 lines.
+  2. For numericals show STEPS table, final Q/R
+     or Hex. Step marks are high.
+  3. Use same headings in exam for readability.
+================================================================
