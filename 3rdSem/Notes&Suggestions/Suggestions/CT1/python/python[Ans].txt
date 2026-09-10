@@ -1,0 +1,1010 @@
+================================================================
+ PYTHON CT1 - COMPLETE ANSWERS (Class Questions)
+================================================================
+ Format : Plain TXT, ASCII only, 68-char width.
+          Works on Mobile / Notepad / any editor.
+ Legend :
+   Q.      = Question
+   Ans.    = Answer
+   CODE:   = Python program (copy as it is)
+   OUTPUT: = Expected output
+   NOTE:   = Exam tip
+
+
+================================================================
+ PART A : 22/07/2026 - BASICS + CONTROL FLOW
+================================================================
+
+
+ Q1. Explain the key features of Python programming language.
+
+ Ans.
+  1. Simple and readable : English-like syntax.
+  2. Interpreted : runs line by line, no compilation
+     needed.
+  3. Dynamically typed : no need to declare int,
+     float, etc. Example: x = 10.
+  4. High level + portable : same code runs on
+     Windows / Linux / Mobile (with interpreter).
+  5. Large library : math, string, random, etc.
+  6. Object oriented + functional support.
+  7. Free and open source.
+  8. Used in AI, web, automation, data science.
+
+
+ Q2. Discuss different data types in Python with uses.
+
+ Ans.
+  1. int    : whole numbers. Ex: x = 10. Use: count,
+     factorial, age.
+  2. float  : decimal numbers. Ex: p = 10.5.
+     Use: average, percentage.
+  3. str    : text in quotes. Ex: s = "hello".
+     Use: name, sentence processing.
+  4. bool   : True / False. Use: conditions, flags.
+  5. list   : ordered, changeable [1,2,3]. Use: marks,
+     items list.
+  6. tuple  : ordered, unchangeable (1,2,3). Use:
+     fixed data like (day, month, year).
+  7. dict   : key:value pairs {"a":1}. Use: student
+     record, phone book.
+  8. set    : unique items {1,2,3}. Use: remove
+     duplicates.
+
+ CODE:
+ --------------------
+  x = 10          # int
+  y = 10.5        # float
+  s = "hello"     # str
+  l = [1, 2, 3]   # list
+  t = (1, 2, 3)   # tuple
+  d = {"a": 1}    # dict
+ --------------------
+
+
+ Q3. Explain the structure of if, elif, else with
+     functionality.
+
+ Ans.
+  Used for decision making.
+
+  Syntax:
+
+  CODE:
+  --------------------
+  if condition1:
+      statement-1
+  elif condition2:
+      statement-2
+  else:
+      statement-3
+  --------------------
+
+  Working:
+  1. if : checked first. If True, its block runs.
+  2. elif : checked only if previous if/elif is
+     False. Any number of elif allowed.
+  3. else : runs when all above are False. Optional.
+
+  Example:
+
+  CODE:
+  --------------------
+  marks = 75
+  if marks >= 90:
+      print("A")
+  elif marks >= 60:
+      print("B")
+  else:
+      print("C")
+  --------------------
+  OUTPUT:
+  --------------------
+  B
+  --------------------
+
+
+ Q4. Explain the use of break and continue in loops.
+
+ Ans.
+  break    : stops the loop fully and comes out.
+  continue : skips current round and goes to next
+             round. Loop does NOT stop.
+
+ CODE:
+ --------------------
+  for i in range(1, 6):
+      if i == 3:
+          break
+      print(i)
+  # Output: 1 2  (loop stops at 3)
+
+  for i in range(1, 6):
+      if i == 3:
+          continue
+      print(i)
+  # Output: 1 2 4 5  (3 is skipped)
+ --------------------
+
+
+================================================================
+ PART B : 5 MARKS - THEORY
+================================================================
+
+
+ Q5. Write a Python program and explain its working
+     procedure.
+
+ Ans.
+  Steps in a Python program:
+  1. Write source code in .py file.
+  2. Interpreter reads line by line.
+  3. Converts to bytecode (.pyc).
+  4. PVM (Python Virtual Machine) converts bytecode
+     to machine code and executes.
+  5. Output is shown.
+
+ CODE:
+ --------------------
+  # add.py
+  a = 10
+  b = 20
+  c = a + b
+  print("Sum =", c)
+ --------------------
+ OUTPUT:
+ --------------------
+  Sum = 30
+ --------------------
+  Explanation: a,b store 10,20. c stores sum.
+  print() displays result.
+
+
+ Q6. Explain the features and advantages of Python.
+
+ Ans.
+  Same as Q1, for 5 marks write 6-7 points:
+  1. Easy to learn and read.
+  2. No header / semicolon / brackets needed.
+  3. Dynamic typing saves time.
+  4. Huge libraries reduce code length.
+  5. Portable across OS.
+  6. Supports OOP, used in real projects.
+  7. Less code: 5-line Python = 20-line C/Java.
+  Advantage in exam: fast to write, fewer errors.
+
+
+ Q7. Describe and differentiate various operators.
+
+ Ans.
+  1. Arithmetic : + - * / // % **
+     Ex: 7 // 2 = 3, 7 % 2 = 1, 2 ** 3 = 8
+  2. Relational : == != > < >= <=
+     Ex: 5 > 3 gives True. Use in if.
+  3. Logical : and, or, not
+     Ex: (a>5 and b<10)
+  4. Assignment : = += -= *= /=
+     Ex: x += 2 means x = x + 2
+  5. Membership : in, not in
+     Ex: "a" in "apple" -> True
+  6. Identity : is, is not
+  7. Bitwise : & | ^ << >>
+     Use: low-level, fast math.
+
+
+ Q8. Application of for and while loops + real life.
+
+ Ans.
+  for loop : used when number of times is known.
+  while loop : used when condition based, times
+               unknown.
+
+ CODE:
+ --------------------
+  # for : print 5 names
+  names = ["A", "B", "C"]
+  for n in names:
+      print(n)
+
+  # while : ask password till correct
+  pwd = ""
+  while pwd != "1234":
+      pwd = input("Enter pwd: ")
+  --------------------
+
+  Real life:
+  1. for : attendance list, marks of 60 students.
+  2. while : ATM pin retry, game loop till exit,
+     sensor reading till switch off.
+
+
+ Q9. Uses of break, continue, pass + loop control.
+
+ Ans.
+  break    : exit loop. Ex: stop search when item
+             found.
+  continue : skip one iteration. Ex: skip absent
+             student.
+  pass     : do nothing placeholder. Needed where
+             Python expects a block but you want to
+             write code later.
+
+ CODE:
+ --------------------
+  for i in range(5):
+      if i == 2:
+          pass      # do nothing, go ahead
+      print(i)
+ --------------------
+
+  Diagram (loop control):
+
+  --------------------
+   start loop
+      |
+   condition?
+    /    \
+  True   False -> exit
+   |
+  break? -> Yes -> exit loop
+   |
+  continue? -> Yes -> next round
+   |
+  normal body -> next round
+  --------------------
+
+
+ Q10. What is source code, byte code, machine code?
+      How connected?
+
+ Ans.
+  1. Source code (.py) : human readable code you
+     write. Ex: print("hi").
+  2. Byte code (.pyc) : intermediate code made by
+     interpreter (in __pycache__). Not readable,
+     but portable.
+  3. Machine code (0/1) : CPU readable binary.
+     Actually executed.
+
+  Connection (ASCII diagram):
+
+  --------------------
+   Source (.py)
+       |
+       v  [compile]
+   Bytecode (.pyc)
+       |
+       v  [PVM interprets]
+   Machine code (0/1)
+       |
+       v
+   CPU executes -> Output
+  --------------------
+
+
+================================================================
+ PART C : PROGRAMS
+================================================================
+
+
+ Q11. Reverse a 2-digit number.
+
+ CODE:
+ --------------------
+  n = int(input("Enter 2-digit no: "))
+  rev = (n % 10) * 10 + (n // 10)
+  print("Reverse =", rev)
+ --------------------
+ OUTPUT:
+ --------------------
+  Enter 2-digit no: 42
+  Reverse = 24
+ --------------------
+  Method: 42 % 10 = 2, 42 // 10 = 4, so 2*10+4=24.
+
+
+ Q12. Check case of a character.
+
+ CODE:
+ --------------------
+  ch = input("Enter a character: ")
+  if ch.isupper():
+      print(ch, "is UPPERCASE")
+  elif ch.islower():
+      print(ch, "is lowercase")
+  else:
+      print(ch, "is not a letter")
+ --------------------
+ OUTPUT:
+ --------------------
+  Enter a character: A
+  A is UPPERCASE
+ --------------------
+
+
+ Q13. Maximum among three numbers.
+
+ CODE:
+ --------------------
+  a = int(input("Enter a: "))
+  b = int(input("Enter b: "))
+  c = int(input("Enter c: "))
+  m = max(a, b, c)
+  print("Maximum =", m)
+ --------------------
+  Method (without max):
+  --------------------
+  if a >= b and a >= c:
+      print(a)
+  elif b >= a and b >= c:
+      print(b)
+  else:
+      print(c)
+  --------------------
+
+
+ Q14. Factorial of a number.
+
+ CODE:
+ --------------------
+  n = int(input("Enter n: "))
+  fact = 1
+  for i in range(1, n + 1):
+      fact = fact * i
+  print("Factorial =", fact)
+ --------------------
+ OUTPUT:
+ --------------------
+  Enter n: 5
+  Factorial = 120
+ --------------------
+
+
+ Q15. GCD of two numbers.
+
+ CODE:
+ --------------------
+  import math
+  a = int(input("Enter a: "))
+  b = int(input("Enter b: "))
+  print("GCD =", math.gcd(a, b))
+ --------------------
+  Manual method:
+  --------------------
+  a, b = 12, 18
+  while b != 0:
+      a, b = b, a % b
+  print(a)  # 6
+  --------------------
+
+
+ Q16. Prime or composite.
+
+ CODE:
+ --------------------
+  n = int(input("Enter n: "))
+  if n < 2:
+      print("Neither prime nor composite")
+  else:
+      for i in range(2, int(n ** 0.5) + 1):
+          if n % i == 0:
+              print("Composite")
+              break
+      else:
+          print("Prime")
+ --------------------
+
+
+ Q17. Pattern 1:
+  AAAA
+  _BBB  (_ = space)
+  __CC
+  ___D
+
+ CODE:
+ --------------------
+  s = "ABCD"
+  for i in range(4):
+      print(" " * i + s[i] * (4 - i))
+ --------------------
+ OUTPUT:
+ --------------------
+  AAAA
+   BBB
+    CC
+     D
+ --------------------
+
+
+ Q18. Pattern 2:
+  __1__
+  _222_
+  33333
+
+ CODE:
+ --------------------
+  for i in range(1, 4):
+      sp = " " * (3 - i)
+      print(sp + str(i) * (2 * i - 1) + sp)
+ --------------------
+ OUTPUT:
+ --------------------
+    1
+   222
+  33333
+ --------------------
+  Logic: spaces = 3-i, digits = 2*i-1.
+
+
+================================================================
+ PART D : 05/08/2026 - STRINGS
+================================================================
+
+
+ Q19. Various string functions with examples.
+
+ Ans. Common functions:
+  len(s)       : length. len("abc")=3
+  upper/lower  : "hi".upper()="HI"
+  strip()      : removes spaces. " a ".strip()="a"
+  split()      : "a b".split()=["a","b"]
+  join()       : "-".join(["a","b"])="a-b"
+  replace()    : "hi".replace("h","b")="bi"
+  find()       : "abc".find("b")=1
+  count()      : "aaa".count("a")=3
+
+
+ Q20. Difference between slicing and indexing.
+
+ Ans.
+  Indexing : gets ONE character. Ex: s="hello",
+             s[0]="h", s[-1]="o".
+  Slicing  : gets a PART (substring). Syntax
+             s[start:stop:step]. Ex: s[1:4]="ell",
+             s[::-1] reverses.
+
+  Diagram:
+
+  --------------------
+   s =  h  e  l  l  o
+   idx  0  1  2  3  4
+   s[1] = e      (indexing, 1 char)
+   s[1:4] = ell  (slicing, many chars)
+  --------------------
+
+
+ Q21. String methods with examples/functions.
+
+ Ans. Same as Q19, for 5 marks expand:
+  1. capitalize() : "hello" -> "Hello"
+  2. title() : "my name" -> "My Name"
+  3. startswith()/endswith() : check start/end,
+     returns True/False.
+  4. isalpha()/isdigit()/isalnum() : type check.
+  5. zfill() : pad zeros. "5".zfill(3)="005".
+
+
+ Q22. Program using slicing + indexing to extract data.
+
+ CODE:
+ --------------------
+  s = "2026-08-05:Marks=85"
+  date = s[0:10]        # indexing range
+  marks = s[-2:]        # last 2 chars
+  print("Date:", date)
+  print("Marks:", marks)
+  print("First char:", s[0])
+  print("Reverse:", s[::-1][:10])
+ --------------------
+ OUTPUT:
+ --------------------
+  Date: 2026-08-05
+  Marks: 85
+ --------------------
+
+
+ Q23. Output of concatenation and repetition.
+
+ Ans.
+  + : joins strings. "a"+"b" = "ab".
+  * : repeats. "hi"*3 = "hihihi".
+
+ CODE:
+ --------------------
+  print("Python" + " " + "Lab")  # Python Lab
+  print("Ha" * 3)                # HaHaHa
+  print(len("ab" * 4))           # 8
+ --------------------
+
+
+ Q24. Develop string results using multiple methods.
+
+ Ans. Example combining methods:
+
+ CODE:
+ --------------------
+  s = "  Hello, Python World!  "
+  print(s.strip().lower().replace("world", "lab"))
+  # Output: hello, python lab!
+  words = s.split()
+  print(words)          # ['Hello,', 'Python', 'World!']
+  print("-".join(words))# Hello,-Python-World!
+ --------------------
+  Effectiveness: chaining reduces lines, faster
+  than manual loops, less error.
+
+
+================================================================
+ PART E : 12/08/2026 - LIST / TUPLE / DICT (5 MARKS)
+================================================================
+
+
+ Q25. Difference between tuple and list + uses.
+
+ Ans.
+  LIST []            | TUPLE ()
+  -------------------|-------------------
+  Changeable         | Unchangeable
+  Slower             | Faster, less memory
+  Ex: [1,2,3]        | Ex: (1,2,3)
+  Use: marks, cart   | Use: date, coords
+
+ CODE:
+ --------------------
+  l = [1, 2]
+  l.append(3)   # OK
+  t = (1, 2)
+  # t.append(3) # ERROR
+ --------------------
+
+
+ Q26. Structure and use of dictionaries with example.
+
+ Ans.
+  Structure: {key : value}. Keys unique.
+
+ CODE:
+ --------------------
+  student = {"name": "Asha", "roll": 5, "marks": 90}
+  print(student["name"])  # Asha
+  student["marks"] = 95   # update
+  print(student)
+ --------------------
+  Use: phone book, student record, word count.
+
+
+ Q27. Functions and methods on dictionaries.
+
+ Ans.
+  get(k)      : safe read. d.get("a")
+  keys()      : all keys. list(d.keys())
+  values()    : all values.
+  items()     : (key,value) pairs.
+  update()    : merge. d.update({"b":2})
+  pop(k)      : remove key.
+  setdefault(): add if missing.
+
+ CODE:
+ --------------------
+  d = {"a": 1, "b": 2}
+  print(d.keys())    # dict_keys(['a','b'])
+  print(d.values())  # dict_values([1,2])
+  d.update({"c": 3})
+  print(d.pop("a"))  # 1
+ --------------------
+
+
+ Q28. Program to demonstrate list operation + output.
+
+ CODE:
+ --------------------
+  l = [5, 2, 8, 1]
+  print("Original:", l)
+  l.append(9)
+  print("After append:", l)
+  l.remove(2)
+  print("After remove 2:", l)
+  l.sort()
+  print("After sort:", l)
+  l.insert(1, 100)
+  print("After insert:", l)
+ --------------------
+ OUTPUT:
+ --------------------
+  Original: [5, 2, 8, 1]
+  After append: [5, 2, 8, 1, 9]
+  After remove 2: [5, 8, 1, 9]
+  After sort: [1, 5, 8, 9]
+  After insert: [1, 100, 5, 8, 9]
+ --------------------
+
+
+ Q29. Tuple + indexing/slicing simulation.
+
+ CODE:
+ --------------------
+  t = (10, 20, 30, 40, 50)
+  print(t[0])     # 10 (index)
+  print(t[-1])    # 50 (last)
+  print(t[1:4])   # (20, 30, 40) slice
+  print(t[::-1])  # reverse
+  print(len(t))   # 5
+ --------------------
+
+
+ Q30. Manipulation of dictionary with built-in methods.
+
+ Ans. See Q27. Impact:
+  update() : adds/overwrites, size grows.
+  keys()   : view, live update if dict changes.
+  pop()    : shrinks dict, returns value.
+  clear()  : empties dict.
+
+
+ Q31. List ops insert(), remove(), sort() effects.
+
+ Ans.
+  insert(i,x) : adds x at position i, shifts right.
+                Size +1.
+  remove(x)   : deletes first x, shifts left.
+                Error if not found. Size -1.
+  sort()      : rearranges ascending, same size.
+                sort(reverse=True) for descending.
+
+
+ Q32. Python data structures: list vs tuple vs dict.
+
+ Ans.
+  list  : ordered, mutable, allows duplicate.
+          [1,2,2]. Use: dynamic collection.
+  tuple : ordered, immutable, allows duplicate.
+          (1,2,2). Use: fixed record.
+  dict  : unordered (insertion order kept),
+          key-value, keys unique.
+          {"id":1}. Use: lookup table.
+
+
+ Q33. update(), keys(), values() with examples.
+
+ CODE:
+ --------------------
+  d = {"x": 10, "y": 20}
+  print(list(d.keys()))    # ['x', 'y']
+  print(list(d.values()))  # [10, 20]
+  d.update({"z": 30})
+  print(d)  # {'x':10,'y':20,'z':30}
+ --------------------
+
+
+ Q34. Various operations performed on list.
+
+ Ans.
+  append, extend, insert, remove, pop, clear,
+  index, count, sort, reverse, copy, len, max,
+  min, sum, slicing, + and *.
+
+ CODE:
+ --------------------
+  a = [1, 2] + [3, 4]  # [1,2,3,4]
+  b = [1] * 3          # [1,1,1]
+  print(sum(a), max(a), min(a))
+ --------------------
+
+
+================================================================
+ PART F : 17/08/2026 - LIST/TUPLE/DICT PROGRAMS
+================================================================
+
+
+ Q35. Second maximum in a list.
+
+ CODE:
+ --------------------
+  l = list(map(int, input("Enter nos: ").split()))
+  uniq = sorted(set(l))
+  if len(uniq) < 2:
+      print("No second max")
+  else:
+      print("Second max =", uniq[-2])
+ --------------------
+ OUTPUT:
+ --------------------
+  Enter nos: 5 2 8 8 1
+  Second max = 5
+ --------------------
+
+
+ Q36. Remove all occurrences of given element.
+
+ CODE:
+ --------------------
+  l = [1, 2, 3, 2, 4, 2]
+  x = int(input("Remove: "))
+  l = [i for i in l if i != x]
+  print(l)
+ --------------------
+
+
+ Q37. Remove duplicates keeping order.
+
+ CODE:
+ --------------------
+  l = [1, 2, 2, 3, 1, 4]
+  seen = set()
+  res = []
+  for i in l:
+      if i not in seen:
+          seen.add(i)
+          res.append(i)
+  print(res)  # [1, 2, 3, 4]
+ --------------------
+
+
+ Q38. Tuple even/odd split.
+
+ CODE:
+ --------------------
+  t = tuple(map(int, input("Enter tuple: ").split()))
+  even = tuple(x for x in t if x % 2 == 0)
+  odd = tuple(x for x in t if x % 2 != 0)
+  print("Original:", t)
+  print("Even:", even)
+  print("Odd:", odd)
+ --------------------
+ OUTPUT:
+ --------------------
+  Enter tuple: 1 2 3 4 5
+  Original: (1, 2, 3, 4, 5)
+  Even: (2, 4)
+  Odd: (1, 3, 5)
+ --------------------
+
+
+ Q39. Dictionary key check till exit.
+
+ CODE:
+ --------------------
+  d = {"a": 1, "b": 2}
+  while True:
+      k = input("Enter key (exit to stop): ")
+      if k == "exit":
+          break
+      if k in d:
+          print("Value =", d[k])
+      else:
+          v = input("Not found. Enter value: ")
+          d[k] = v
+          print("Added:", d)
+ --------------------
+
+
+================================================================
+ PART G : 19/08/2026 - MIXED PROGRAMS
+================================================================
+
+
+ Q40. Print a hollow rectangle.
+
+ CODE:
+ --------------------
+  r = 4
+  c = 6
+  for i in range(r):
+      for j in range(c):
+          if i == 0 or i == r-1 or j == 0 or j == c-1:
+              print("*", end="")
+          else:
+              print(" ", end="")
+      print()
+ --------------------
+ OUTPUT:
+ --------------------
+  ******
+  *    *
+  *    *
+  ******
+ --------------------
+
+
+ Q41. Detection of double space in string.
+
+ CODE:
+ --------------------
+  s = input("Enter string: ")
+  pos = s.find("  ")
+  if pos != -1:
+      print("Double space at index", pos)
+  else:
+      print("No double space")
+ --------------------
+
+
+ Q42. Take 6 inputs, display unique only.
+
+ CODE:
+ --------------------
+  nums = []
+  for i in range(6):
+      nums.append(int(input("Enter no: ")))
+  print("Unique:", list(set(nums)))
+  # order kept version:
+  uniq = list(dict.fromkeys(nums))
+  print("Unique ordered:", uniq)
+ --------------------
+
+
+ Q43. Find spam word from paragraph.
+
+ CODE:
+ --------------------
+  spam = ["win", "free", "money", "lottery"]
+  para = input("Enter para: ").lower()
+  found = [w for w in spam if w in para]
+  if found:
+      print("Spam found:", found)
+  else:
+      print("No spam")
+ --------------------
+
+
+ Q44. Sentence clean + word analysis + hyphen join.
+
+ CODE:
+ --------------------
+  s = input("Enter sentence: ")
+  for p in ":,!.?;":
+      s = s.replace(p, "")
+  s = s.lower()
+  words = s.split()
+  print("Total words:", len(words))
+  if words:
+      longest = max(words, key=len)
+      print("Longest:", longest)
+      c = sum(1 for w in words if "a" in w)
+      print("Words with a:", c)
+      print("Hyphen join:", "-".join(words))
+ --------------------
+ OUTPUT (example):
+ --------------------
+  Enter sentence: Hello, World! Apple pie.
+  Total words: 4
+  Longest: hello
+  Words with a: 1
+  Hyphen join: hello-world-apple-pie
+ --------------------
+
+
+================================================================
+ PART H : 26/08/2026 - REVISION THEORY
+================================================================
+  NOTE: Most repeat from Part A/B. Write same points.
+  Q45 Steps in Python program -> See Q5.
+  Q46 Looping types + nested loop -> See Q8 + below.
+  Q47 Features/advantages -> See Q1/Q6.
+  Q48 Syntax rules -> indent, colon, case-sensitive,
+       quotes, comments (#), no semicolon needed.
+  Q49 Dynamic variables/datatype -> See Q2. No
+       declaration, type changes at runtime:
+       x=10 (int), x="hi" (now str).
+  Q50 Operators -> See Q7.
+  Q51 if/elif/nested if -> See Q3.
+
+
+ Q52. Nested loops + execution process.
+
+ Ans.
+  Loop inside loop. Inner runs fully for each
+  outer round.
+
+ CODE:
+ --------------------
+  for i in range(1, 4):       # outer
+      for j in range(1, 4):   # inner
+          print(i, "*", j, "=", i*j)
+ --------------------
+  Execution: i=1 -> j=1,2,3. Then i=2 -> j=1,2,3.
+  Use: tables, patterns, matrix.
+
+
+ Q53. break/continue/pass -> See Q9.
+
+
+================================================================
+ PART I : 31/08/2026 - FUNCTIONS
+================================================================
+
+
+ Q54. Factorial using function.
+
+ CODE:
+ --------------------
+  def fact(n):
+      f = 1
+      for i in range(1, n+1):
+          f *= i
+      return f
+
+  print(fact(5))  # 120
+ --------------------
+
+
+ Q55. Prime using function.
+
+ CODE:
+ --------------------
+  def is_prime(n):
+      if n < 2:
+          return False
+      for i in range(2, int(n**0.5)+1):
+          if n % i == 0:
+              return False
+      return True
+
+  print(is_prime(7))   # True
+  print(is_prime(8))   # False
+ --------------------
+
+
+ Q56. Reverse using function.
+
+ CODE:
+ --------------------
+  def reverse_num(n):
+      r = 0
+      while n > 0:
+          r = r*10 + n%10
+          n //= 10
+      return r
+
+  print(reverse_num(123))  # 321
+ --------------------
+
+
+ Q57. Palindrome using function.
+
+ CODE:
+ --------------------
+  def is_pal(s):
+      s = str(s).lower()
+      return s == s[::-1]
+
+  print(is_pal("madam"))  # True
+  print(is_pal(121))      # True
+ --------------------
+
+
+ Q58. Count vowels using function.
+
+ CODE:
+ --------------------
+  def count_vowels(s):
+      c = 0
+      for ch in s.lower():
+          if ch in "aeiou":
+              c += 1
+      return c
+
+  print(count_vowels("Hello"))  # 2
+ --------------------
+
+
+ Q59. Fibonacci using function.
+
+ CODE:
+ --------------------
+  def fib(n):
+      a, b = 0, 1
+      for _ in range(n):
+          print(a, end=" ")
+          a, b = b, a+b
+
+  fib(7)  # 0 1 1 2 3 5 8
+ --------------------
+
+================================================================
+ END OF FILE
+================================================================
+ Tip: In exam write code with comments + sample
+ output. That gives full marks even if logic is
+ small.
+================================================================
