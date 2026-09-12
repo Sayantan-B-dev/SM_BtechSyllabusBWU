@@ -9,3 +9,5 @@ node_modules/
 npm-debug.log*
 
 */DBMS/*/output/
+*_images/
+**/*Suggestions/**/*.pdf
