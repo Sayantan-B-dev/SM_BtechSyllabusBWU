@@ -722,4 +722,292 @@ fib(7)  # 0 1 1 2 3 5 8
 
 ---
 
+## Part J: 14/09/2026 — Strings, Lists, Tuples, Dicts (Revision + Programs)
+
+### Q45. Concatenation and repetition on strings.
+
+- **Concatenation (`+`)**: joins two or more strings into one.
+- **Repetition (`*`)**: repeats a string N times.
+
+```python
+a = "Hello"
+b = "World"
+print(a + " " + b)  # Hello World
+print("Hi" * 3)     # HiHiHi
+print("ab" + "cd" * 2)  # abcdcd  (* has higher priority than +)
+```
+
+Note: both create a **new** string (strings are immutable). `+` needs both sides to be `str` — use `str(x)` for numbers.
+
+### Q46. String slicing with example.
+
+Syntax: `s[start:stop:step]`. Goes from `start` to `stop-1`. `step` default is 1.
+
+```python
+s = "Python"
+print(s[0:4])   # Pyth  (index 0,1,2,3)
+print(s[2:])    # thon  (from 2 to end)
+print(s[:4])    # Pyth  (from start to 3)
+print(s[::2])   # Pto   (every 2nd char)
+print(s[::-1])  # nohtyP (reverse)
+print(s[-4:-1]) # tho   (negative index: -4,-3,-2)
+```
+
+### Q47. Immutability of strings.
+
+Strings **cannot be changed in place**. Any method that looks like a change returns a **new** string.
+
+```python
+s = "hello"
+# s[0] = "H"   # ERROR: TypeError: 'str' object does not support item assignment
+s2 = s.upper()
+print(s)   # hello (original unchanged)
+print(s2)  # HELLO (new string)
+```
+
+Why it matters: safe as dictionary keys, safe to share/slice, but repeated `+=` in a big loop creates many objects — use `"".join(list)` instead.
+
+### Q48. Use of the `len()` function.
+
+`len(obj)` returns the number of items/characters.
+
+```python
+print(len("hello"))      # 5
+print(len([1, 2, 3]))    # 3
+print(len((10, 20)))     # 2
+print(len({"a": 1}))     # 1  (counts keys)
+print(len(""))           # 0
+```
+
+Use: loop limits, validation (`if len(pwd) < 6`), last index = `len(s)-1`.
+
+### Q49. Difference between `upper()` and `lower()`.
+
+| `upper()` | `lower()` |
+|-----------|-----------|
+| Converts to UPPERCASE | Converts to lowercase |
+| `"Hi".upper()` → `"HI"` | `"Hi".lower()` → `"hi"` |
+| Use: case-insensitive compare | Use: normalize input, clean sentences |
+
+```python
+s = "Hello World"
+print(s.upper())  # HELLO WORLD
+print(s.lower())  # hello world
+# Case-insensitive check:
+ans = input("yes/no: ").lower()
+if ans == "yes":
+    print("OK")
+```
+
+### Q50. Multiplication table from 1 to 10.
+
+```python
+n = int(input("Enter a number: "))
+for i in range(1, 11):
+    print(n, "x", i, "=", n * i)
+# Input 5 -> 5 x 1 = 5 ... 5 x 10 = 50
+```
+
+### Q51. Use of `strip()` and results.
+
+Removes leading/trailing whitespace (or given chars). `lstrip()` = left only, `rstrip()` = right only. Returns a **new** string.
+
+```python
+s = "   hello   "
+print("[" + s.strip() + "]")   # [hello]
+print("[" + s.lstrip() + "]")  # [hello   ]
+print("[" + s.rstrip() + "]")  # [   hello]
+print("xxhellox".strip("x"))   # hello
+print(len("  a  ".strip()))    # 1
+```
+
+Result: inner spaces untouched — `" a b ".strip()` → `"a b"`.
+
+### Q52. Count even and odd numbers between 1 and N.
+
+```python
+n = int(input("Enter N: "))
+even = odd = 0
+for i in range(1, n + 1):
+    if i % 2 == 0:
+        even += 1
+    else:
+        odd += 1
+print("Even =", even)
+print("Odd =", odd)
+# Input 10 -> Even = 5, Odd = 5
+```
+
+Shortcut: `even = n // 2`, `odd = n - even`.
+
+### Q53. Purpose of lists + uses.
+
+A list `[]` stores many values in order, changeable, duplicates allowed, mixed types allowed.
+
+```python
+marks = [80, 90, 75]
+marks.append(95)
+print(marks[0])  # 80
+print(sum(marks) / len(marks))  # average
+```
+
+Uses: student marks, cart items, sensor readings, words of a sentence, records to sort/filter.
+
+### Q54. Different ways to access elements in a list.
+
+```python
+l = [10, 20, 30, 40, 50]
+print(l[0])     # 10  (positive index)
+print(l[-1])    # 50  (negative index, last)
+print(l[1:4])   # [20, 30, 40]  (slicing)
+print(l[::-1])  # [50, 40, 30, 20, 10]  (reverse)
+for x in l:     # loop access
+    print(x)
+print(l[10] if len(l) > 10 else "index out of range")  # safe access
+```
+
+Also: `enumerate` for index + value: `for i, x in enumerate(l): print(i, x)`.
+
+### Q55. Common list methods and functions.
+
+```python
+l = [5, 2, 8, 1]
+l.append(9)       # [5,2,8,1,9]  add at end
+l.insert(1, 100)  # [5,100,2,8,1,9]  add at position
+l.remove(2)       # deletes first 2
+l.pop()           # removes + returns last (9)
+l.pop(0)          # removes + returns index 0 (5)
+l.sort()          # ascending in place
+l.reverse()       # reverse order in place
+print(l.count(8), l.index(8), len(l), sum(l), max(l), min(l))
+```
+
+`extend([..])` adds many items; `clear()` empties; `copy()` makes a shallow copy.
+
+### Q56. Difference between tuple and list.
+
+| List `[]` | Tuple `()` |
+|-----------|------------|
+| Mutable (changeable) | Immutable (fixed) |
+| Slower, more memory | Faster, less memory |
+| Methods: `append, remove, sort` | Only `count, index` |
+| Use: dynamic data (marks, cart) | Use: fixed record (date, coords, RGB) |
+
+```python
+l = [1, 2]
+l[0] = 99  # OK
+t = (1, 2)
+# t[0] = 99  # ERROR
+```
+
+### Q57. Accessing tuple values using index.
+
+Same as list indexing, but read-only.
+
+```python
+t = (10, 20, 30, 40)
+print(t[0])   # 10
+print(t[-1])  # 40  (last)
+print(t[1])   # 20
+# t[1] = 99   # ERROR: tuple is immutable
+for x in t:
+    print(x)
+```
+
+Check first: `if 0 <= i < len(t): print(t[i])` to avoid `IndexError`.
+
+### Q58. Dictionaries to store and access data.
+
+Structure `{key: value}`. Keys unique + immutable (`str, int, tuple`). Fast lookup by key.
+
+```python
+student = {"name": "Asha", "roll": 5, "marks": 90}
+print(student["name"])       # Asha
+print(student.get("age"))    # None (no error)
+student["marks"] = 95        # update
+student["city"] = "BBSR"     # add new
+print(student)
+```
+
+Use: student record, phone book, word frequency, config/settings.
+
+### Q59. Role of `keys()` and `values()`.
+
+- `keys()`: view of all keys — for checking/looping fields.
+- `values()`: view of all values — for totals/averages.
+- `items()`: (key, value) pairs — for full scan.
+
+```python
+d = {"a": 10, "b": 20, "c": 30}
+print(list(d.keys()))    # ['a', 'b', 'c']
+print(list(d.values()))  # [10, 20, 30]
+print(sum(d.values()))   # 60
+for k in d.keys():
+    print(k, d[k])
+for k, v in d.items():
+    print(k, "->", v)
+```
+
+### Q60. Check number is odd or even.
+
+```python
+n = int(input("Enter a number: "))
+if n % 2 == 0:
+    print(n, "is Even")
+else:
+    print(n, "is Odd")
+```
+
+In function form:
+
+```python
+def odd_even(n):
+    return "Even" if n % 2 == 0 else "Odd"
+print(odd_even(7))  # Odd
+```
+
+### Q61. Use of `append()` and `remove()`.
+
+- `append(x)`: adds `x` at the **end**. Size +1.
+- `remove(x)`: deletes **first** occurrence of `x`. Size −1. Raises `ValueError` if absent.
+
+```python
+l = [1, 2, 3, 2]
+l.append(4)
+print(l)      # [1, 2, 3, 2, 4]
+l.remove(2)
+print(l)      # [1, 3, 2, 4]  (only first 2 gone)
+if 99 in l:
+    l.remove(99)  # safe remove
+```
+
+### Q62. Tuple slicing with example.
+
+Same syntax as strings/lists: `t[start:stop:step]`. Returns a **new tuple**.
+
+```python
+t = (10, 20, 30, 40, 50)
+print(t[1:4])   # (20, 30, 40)
+print(t[:3])    # (10, 20, 30)
+print(t[2:])    # (30, 40, 50)
+print(t[::2])   # (10, 30, 50)
+print(t[::-1])  # (50, 40, 30, 20, 10)
+```
+
+### Q63. `update()` and `pop()` for dictionaries.
+
+- `update({..})`: merges. Adds new keys, overwrites existing.
+- `pop(k)`: removes key `k` and **returns its value**. `pop(k, default)` avoids `KeyError`.
+
+```python
+d = {"a": 1, "b": 2}
+d.update({"b": 20, "c": 3})
+print(d)            # {'a': 1, 'b': 20, 'c': 3}
+print(d.pop("a"))   # 1, d is now {'b': 20, 'c': 3}
+print(d.pop("x", 0))  # 0 (no error, x absent)
+print(d)
+```
+
+---
+
 > Tip: In exam write code with comments + sample output for full marks.
