@@ -1,4 +1,4 @@
-# RLT Instruction set
+# RTL Instruction set
 
 **Course:** Computer Organization and Architecture  
 **Module:** 1 | **Lecture:** 8  
