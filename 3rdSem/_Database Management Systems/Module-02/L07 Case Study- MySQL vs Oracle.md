@@ -129,6 +129,37 @@
 
 ---
 
+## Commercial and Open-Source DBMS Landscape: DB2 and SQL Server
+
+Syllabus requires MYSQL, ORACLE, DB2, SQL Server. MySQL (open-source) and Oracle (commercial) are covered above. This section completes the set.
+
+### IBM Db2
+
+- **Vendor/type:** IBM, commercial (with free Community Edition). Enterprise RDBMS with strong mainframe (z/OS) and LUW (Linux/Unix/Windows) presence.
+- **Strengths:** Advanced query optimizer, pureScale clustering, BLU Acceleration (columnar in-memory analytics), strong SQL compliance, workload management.
+- **Typical use:** Banking, insurance, large enterprises with IBM mainframe ecosystem; hybrid transactional + analytics (HTAP).
+- **Contrast vs MySQL:** Heavier, costlier, stronger optimizer and enterprise tooling. Contrast vs Oracle: comparable enterprise class; choice often driven by existing vendor stack (IBM vs Oracle).
+
+### Microsoft SQL Server
+
+- **Vendor/type:** Microsoft, commercial (with free Express/Developer editions). Tight Windows/Azure integration, also runs on Linux.
+- **Strengths:** T-SQL (procedural extension), SQL Server Management Studio (SSMS), Always On availability groups, Columnstore indexes, integration with .NET / Azure / Power BI.
+- **Typical use:** Enterprises on Microsoft stack, .NET applications, business intelligence with SSIS/SSRS/SSAS.
+- **Contrast vs MySQL:** Richer BI/HA tooling out of the box, higher license cost. Contrast vs Oracle: similar enterprise class; SQL Server often simpler to administer; Oracle stronger on multi-platform and RAC-style clustering.
+
+### Four-Way Snapshot
+
+| DBMS | License model | Origin | Best fit |
+|---|---|---|---|
+| MySQL | Open-source (GPL) + commercial | Oracle Corp (originally MySQL AB) | Web apps, startups, read-heavy, prototyping |
+| Oracle | Commercial | Oracle Corp | Mission-critical OLTP, data warehouse, RAC/HA |
+| IBM Db2 | Commercial (+ free Community) | IBM | Mainframe shops, finance, HTAP with BLU |
+| SQL Server | Commercial (+ free Express) | Microsoft | .NET/Azure shops, BI, Always On HA |
+
+**Exam tip:** If asked to "compare open-source and commercial DBMS", use MySQL as open-source example and any of Oracle/Db2/SQL Server as commercial example with 3 points: cost, support/SLA, advanced features (partitioning, RAC/Always On/pureScale, security, optimizer).
+
+---
+
 ## Migration Considerations
 
 | Factor | MySQL to Oracle | Oracle to MySQL |

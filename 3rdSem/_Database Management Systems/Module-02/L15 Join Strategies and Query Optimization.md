@@ -200,6 +200,33 @@ With 10,000 tuples, the optimizer might choose the index if it's clustered, or f
 
 ---
 
+## Query Equivalence
+
+Two relational algebra expressions are **equivalent** if they produce the same result on every valid database instance. The optimizer uses equivalence rules to rewrite a query into a cheaper equivalent plan (e.g. Plan C in the worked example: pushing selection below the join).
+
+### Core equivalence rules (must know)
+
+1. **Selection cascade:** `sigma_c1 AND c2(E) = sigma_c1(sigma_c2(E))`
+2. **Selection commutativity:** `sigma_c1(sigma_c2(E)) = sigma_c2(sigma_c1(E))`
+3. **Selection pushdown through join:** if `c` involves only attributes of R: `sigma_c(R JOIN S) = sigma_c(R) JOIN S`
+4. **Projection pushdown:** `pi_L(R JOIN S) = pi_L(pi_LR(R) JOIN pi_LS(S))` where LR/LS are needed attributes plus join keys.
+5. **Join commutativity:** `R JOIN S = S JOIN R`
+6. **Join associativity:** `(R JOIN S) JOIN T = R JOIN (S JOIN T)` — lets optimizer reorder multi-way joins by size/selectivity.
+7. **Selection + Cartesian product to join:** `sigma_{R.A=S.B}(R x S) = R JOIN_{R.A=S.B} S`
+8. **Union/intersection commutativity and associativity** hold; duplicate elimination `delta` interacts carefully with projection.
+
+### Worked mini-example
+
+Query: `pi_Name(sigma_DName='IT'(EMPLOYEE JOIN DEPARTMENT))`
+Equivalent cheaper form: `pi_Name((pi_EmpID,Name,DeptID(EMPLOYEE)) JOIN (pi_DeptID(sigma_DName='IT'(DEPARTMENT))))`
+Reason: filter DEPARTMENT to 1 tuple first, project only needed columns, then join — exactly Plan C. This is selection + projection pushdown applied together.
+
+### Why it matters for Join Strategies
+
+Join ordering (rule 6) decides which relation is outer in nested-loop/block-nested-loop, and whether sort or hash is needed. Equivalence rules generate the candidate plans; cost estimation (sizes, indexes, statistics) picks the winner. Rule-based optimizers apply pushdown heuristics blindly; cost-based optimizers compare equivalent plans by estimated I/O.
+
+---
+
 ## Choosing a Join Strategy: Decision Process
 
 ```
