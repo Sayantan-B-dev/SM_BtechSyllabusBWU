@@ -1,7 +1,7 @@
 # Implementing 8-bit simple CPU design through HDL.
 
 **Course:** Computer Organization and Architecture Lab  
-**Module:** 5 | **Lecture:** 4  
+**Module:** 5 | **Lecture:** 2  
 **Date:** 08-Oct-2026  
 **Faculty:** DR. SUBHANKAR SHOME  
 **CO:** CO 5  

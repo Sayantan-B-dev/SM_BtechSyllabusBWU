@@ -1,7 +1,7 @@
 # Interface a Meomory with 8 bit CPU
 
 **Course:** Computer Organization and Architecture Lab  
-**Module:** 5 | **Lecture:** 6  
+**Module:** 5 | **Lecture:** 3  
 **Date:** 15-Oct-2026  
 **Faculty:** DR. SUBHANKAR SHOME  
 **CO:** CO 5  
@@ -10,35 +10,32 @@
 
 ## Lab Objectives
 
-- Perform a complete system test: load a program into memory, execute instructions, and verify results.
-- Create a testbench that initializes memory with a simple program.
-- Observe the CPU executing the program step by step.
+- Connect the CPU module to a RAM module via address bus, data bus, and read/write control.
+- Create a top-level module integrating CPU and memory.
+- Simulate the integrated system.
 
 ## Theory
 
-**Loading a Program:**
-To test the full system, we pre-load the RAM with a program (machine code). The CPU's program counter starts at address 0 and fetches instructions sequentially.
+**CPU-Memory Interface:**
+The CPU and memory communicate through:
+- **Address Bus:** CPU sends the address of the memory location to access.
+- **Data Bus:** Bidirectional pathway for data transfer between CPU and memory.
+- **Read/Write Control:** CPU asserts read or write signals to control the direction of data transfer.
 
-**Sample Program:**
-A simple program that:
-1. Loads value 10 from memory into the accumulator.
-2. Adds value 5 from memory to the accumulator.
-3. Subtracts value 3 from the accumulator.
-4. Stores the result.
+**Memory-Mapped CPU:**
+The CPU's program counter (PC) provides the address for instruction fetch. For data access, the CPU generates the address from the instruction operands.
 
-**Memory Map:**
-| Address | Content   | Description             |
-|---------|-----------|------------------------|
-| 0x00    | 0x0A      | LOAD R0, [addr]         |
-| 0x01    | 0x10      | Address of data (16)    |
-| 0x02    | 0x05      | ADD R0, [addr]          |
-| 0x03    | 0x11      | Address of data (17)    |
-| 0x04    | 0x09      | SUB R0, [addr]          |
-| 0x05    | 0x12      | Address of data (18)    |
-| ...     | ...       | ...                     |
-| 0x10    | 10        | Data: first operand     |
-| 0x11    | 5         | Data: second operand    |
-| 0x12    | 3         | Data: third operand     |
+**Top-Level Block Diagram:**
+```
+         +-------+                    +--------+
+         |       |-- addr_bus[7:0] -->|        |
+         |       |-- data_bus[7:0] <->|  RAM   |
+         | CPU   |-- mem_read ------->|  256x8 |
+         |       |-- mem_write ------>|        |
+         |       |<-- clk ------------|        |
+         |       |<-- rst ------------|        |
+         +-------+                    +--------+
+```
 
 ## VHDL Code
 
@@ -59,14 +56,7 @@ end entity;
 
 architecture behavioral of ram_256x8 is
   type mem_array is array (0 to 255) of std_logic_vector(7 downto 0);
-  signal mem : mem_array := (
-    0 => "01000000", 1 => "00010000",
-    2 => "00000000", 3 => "00010001",
-    4 => "00100000", 5 => "00010010",
-    6 => "01100000", 7 => "01100000",
-    16 => "00001010", 17 => "00000101", 18 => "00000011",
-    others => (others => '0')
-  );
+  signal mem : mem_array;
 begin
   process (clk) begin
     if rising_edge(clk) then
@@ -96,10 +86,9 @@ end entity;
 architecture behavioral of cpu_core is
   type state_type is (FETCH, DECODE, EXEC);
   signal state : state_type;
-  signal pc, ir, acc, mar : std_logic_vector(7 downto 0) := (others => '0');
-  signal fetch_operand : std_logic := '0';
+  signal pc, ir, acc : std_logic_vector(7 downto 0) := (others => '0');
 begin
-  addr_out <= pc when state = FETCH else mar;
+  addr_out <= pc when state = FETCH else (others => '0');
   data_out <= acc;
 
   process (clk, rst) begin
@@ -108,32 +97,20 @@ begin
       pc <= (others => '0');
       ir <= (others => '0');
       acc <= (others => '0');
-      mar <= (others => '0');
-      fetch_operand <= '0';
     elsif rising_edge(clk) then
       case state is
         when FETCH =>
-          if fetch_operand = '0' then
-            ir <= data_in;
-            pc <= std_logic_vector(unsigned(pc) + 1);
-            state <= DECODE;
-          else
-            mar <= data_in;
-            fetch_operand <= '0';
-            state <= EXEC;
-          end if;
+          ir <= data_in;
+          state <= DECODE;
         when DECODE =>
-          if ir(7 downto 5) /= "011" then
-            fetch_operand <= '1';
-            state <= FETCH;
-          else
-            state <= EXEC;
-          end if;
+          state <= EXEC;
         when EXEC =>
+          pc <= std_logic_vector(unsigned(pc) + 1);
           case ir(7 downto 5) is
             when "000" => acc <= std_logic_vector(unsigned(acc) + unsigned(data_in));
             when "001" => acc <= std_logic_vector(unsigned(acc) - unsigned(data_in));
             when "010" => acc <= data_in;
+            when "011" => acc <= acc;
             when "100" => acc <= acc AND data_in;
             when "101" => acc <= acc OR data_in;
             when others => acc <= acc;
@@ -143,7 +120,7 @@ begin
     end if;
   end process;
 
-  mem_read  <= '1';
+  mem_read  <= '1' when (state = FETCH) or (state = EXEC and ir(7 downto 5) /= "011") else '0';
   mem_write <= '0';
 end architecture;
 
@@ -151,13 +128,13 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
-entity complete_system is
+entity cpu_with_memory is
   port (
     clk, rst : in std_logic
   );
 end entity;
 
-architecture structural of complete_system is
+architecture structural of cpu_with_memory is
   signal addr, data_to_mem, data_from_mem : std_logic_vector(7 downto 0);
   signal mem_read, mem_write : std_logic;
 begin
@@ -179,24 +156,22 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
-entity tb_complete_system is
+entity tb_cpu_memory is
 end entity;
 
-architecture sim of tb_complete_system is
+architecture sim of tb_cpu_memory is
   signal clk, rst : std_logic := '0';
 begin
-  uut: entity work.complete_system
+  uut: entity work.cpu_with_memory
     port map (clk => clk, rst => rst);
 
   clk <= NOT clk after 5 ns;
 
   process begin
-    report "Starting complete system test...";
     clk <= '0'; rst <= '0';
     wait for 10 ns; rst <= '1';
     wait for 10 ns; rst <= '0';
-    wait for 200 ns;
-    report "System test complete.";
+    wait for 100 ns;
     wait;
   end process;
 end architecture;
@@ -205,18 +180,15 @@ end architecture;
 ## Expected Output / Waveform
 
 ```
-Starting complete system test...
-Time=0 clk=0
-Time=10 clk=0 rst=1    (reset)
-Time=20 clk=0 rst=0    (start execution)
-... (CPU fetches instructions and executes)
-... LOAD: acc = 10
-... ADD:  acc = 15
-... SUB:  acc = 12
-...
-System test complete.
+clk=0 rst=0
+clk=1 rst=1    (reset active)
+clk=0 rst=0    (reset released, CPU starts fetching)
+clk=1 rst=0    (fetch cycle: reads instruction from PC address)
+clk=0 rst=0    (decode)
+clk=1 rst=0    (execute: increment PC, perform ALU op)
+... (continues fetch-decode-execute cycle)
 ```
 
 ## Conclusion
 
-Performed a complete system test integrating a CPU, memory, and a pre-loaded program. The CPU successfully fetched instructions from memory, decoded them, and executed the operations (LOAD, ADD, SUB) to produce the final result. This demonstrates a fully functional minimal computing system.
+Successfully integrated a simple CPU core with a RAM module. The top-level module connects the CPU and memory through address, data, and control buses, forming a complete minimal computing system.

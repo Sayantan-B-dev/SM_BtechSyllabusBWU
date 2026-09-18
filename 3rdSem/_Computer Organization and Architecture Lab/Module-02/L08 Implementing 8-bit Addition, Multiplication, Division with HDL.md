@@ -1,10 +1,10 @@
 # Implementing 8-bit Addition, Multiplication, Division with HDL
 
 **Course:** Computer Organization and Architecture Lab  
-**Module:** 4 | **Lecture:** 2  
+**Module:** 2 | **Lecture:** 8  
 **Date:** 10-Sep-2026  
 **Faculty:** DR. SUBHANKAR SHOME  
-**CO:** CO 4  
+**CO:** CO 2  
 **Learning Methodology:** Simulation  
 **Reference:** Book & Lab Manual
 

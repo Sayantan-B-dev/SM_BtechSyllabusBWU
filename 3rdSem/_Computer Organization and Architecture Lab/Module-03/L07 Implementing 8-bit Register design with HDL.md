@@ -1,10 +1,10 @@
 # Implementing 8-bit Register design with HDL
 
 **Course:** Computer Organization and Architecture Lab  
-**Module:** 4 | **Lecture:** 3  
+**Module:** 3 | **Lecture:** 7  
 **Date:** 17-Sep-2026  
 **Faculty:** DR. SUBHANKAR SHOME  
-**CO:** CO 4  
+**CO:** CO 3  
 **Learning Methodology:** Simulation  
 **Reference:** Book & Lab Manual
 

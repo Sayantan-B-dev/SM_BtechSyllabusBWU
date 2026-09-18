@@ -1,10 +1,10 @@
 # Implementing 8-bit simple ALU design with HDL
 
 **Course:** Computer Organization and Architecture Lab  
-**Module:** 5 | **Lecture:** 2  
+**Module:** 4 | **Lecture:** 2  
 **Date:** 01-Oct-2026  
 **Faculty:** DR. SUBHANKAR SHOME  
-**CO:** CO 5  
+**CO:** CO 4  
 **Learning Methodology:** Simulation  
 **Reference:** Book & Lab Manual
 
