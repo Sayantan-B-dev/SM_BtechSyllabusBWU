@@ -26,6 +26,7 @@ architecture Structural of alu_16bit is
     signal B_modified : STD_LOGIC_VECTOR(15 downto 0);
     signal Add_Result  : STD_LOGIC_VECTOR(15 downto 0);
     signal Add_Cout    : STD_LOGIC;
+    signal Add_Cin    : STD_LOGIC;
 
 begin
 
@@ -33,13 +34,13 @@ begin
     B_modified <= B when sel = "00" else
                   not B when sel = "01" else
                   (others => '0');
-
+    Add_Cin <='1' when sel = "01" else '0';
     -- RCA performs addition or subtraction
     RCA1: rca_16bit
         port map (
             A    => A,
             B    => B_modified,
-            Cin  => '1' when sel = "01" else '0',
+            Cin  => Add_Cin,
             Sum  => Add_Result,
             Cout => Add_Cout
         );
