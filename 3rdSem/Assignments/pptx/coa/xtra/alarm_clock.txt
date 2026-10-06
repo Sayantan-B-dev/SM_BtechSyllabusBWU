@@ -1,0 +1,130 @@
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+use IEEE.NUMERIC_STD.ALL;
+
+entity alarm_clock is
+    Port (
+        clk        : in  STD_LOGIC;
+        reset      : in  STD_LOGIC;
+        set_alarm  : in  STD_LOGIC;
+        alarm_on   : in  STD_LOGIC;
+        snooze     : in  STD_LOGIC;
+        set_hour   : in  STD_LOGIC;
+        set_minute : in  STD_LOGIC;
+        hour       : out STD_LOGIC_VECTOR(4 downto 0);
+        minute     : out STD_LOGIC_VECTOR(5 downto 0);
+        second     : out STD_LOGIC_VECTOR(5 downto 0);
+        am_pm      : out STD_LOGIC;
+        alarm      : out STD_LOGIC
+    );
+end alarm_clock;
+
+architecture Behavioral of alarm_clock is
+
+    signal h  : integer range 1 to 12 := 12;
+    signal m  : integer range 0 to 59 := 0;
+    signal s  : integer range 0 to 59 := 0;
+
+    signal ah : integer range 1 to 12 := 6;
+    signal am : integer range 0 to 59 := 0;
+
+    signal pm : STD_LOGIC := '0';
+    signal al : STD_LOGIC := '0';
+
+    signal snooze_count : integer range 0 to 9 := 0;
+
+begin
+
+    process(clk)
+    begin
+        if rising_edge(clk) then
+
+            if reset = '1' then
+                h <= 12;
+                m <= 0;
+                s <= 0;
+                pm <= '0';
+                al <= '0';
+                snooze_count <= 0;
+
+            else
+
+                if set_alarm = '1' then
+
+                    if set_hour = '1' then
+                        if ah = 12 then
+                            ah <= 1;
+                        else
+                            ah <= ah + 1;
+                        end if;
+                    end if;
+
+                    if set_minute = '1' then
+                        if am = 59 then
+                            am <= 0;
+                        else
+                            am <= am + 1;
+                        end if;
+                    end if;
+
+                else
+
+                    if s = 59 then
+                        s <= 0;
+
+                        if m = 59 then
+                            m <= 0;
+
+                            if h = 11 then
+                                h <= 12;
+                                pm <= not pm;
+                            elsif h = 12 then
+                                h <= 1;
+                            else
+                                h <= h + 1;
+                            end if;
+
+                        else
+                            m <= m + 1;
+                        end if;
+
+                    else
+                        s <= s + 1;
+                    end if;
+
+                end if;
+
+                if alarm_on = '1' then
+                    if (h = ah) and (m = am) and (s = 0) and
+                       (pm = '0') then
+                        al <= '1';
+                    elsif (h = ah) and (m = am) and (s = 0) and
+                          (pm = '1') then
+                        al <= '1';
+                    end if;
+                end if;
+
+                if snooze = '1' then
+                    al <= '0';
+                    snooze_count <= 5;
+                end if;
+
+                if snooze_count > 0 then
+                    snooze_count <= snooze_count - 1;
+
+                    if snooze_count = 1 then
+                        al <= '1';
+                    end if;
+                end if;
+
+            end if;
+        end if;
+    end process;
+
+    hour   <= std_logic_vector(to_unsigned(h, 5));
+    minute <= std_logic_vector(to_unsigned(m, 6));
+    second <= std_logic_vector(to_unsigned(s, 6));
+    am_pm  <= pm;
+    alarm  <= al;
+
+end Behavioral;

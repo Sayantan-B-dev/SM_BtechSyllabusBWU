@@ -11,13 +11,14 @@
 | **Faculty** | Dr. Subhankar Shome |
 | **Presentation Date** | 03-11-2026 |
 | **Topic** | Digital Decibel Sound Level Indicator with Peak-Hold |
-| **Deck size** | 14 slides = 1 Cover + 1 Introduction + 1 Index + 10 Content + 1 References & Thank-You |
+| **Deck size** | 12 slides = 1 Cover + 1 Introduction + 1 Index + 8 Content + 1 References & Thank-You |
 | **Design** | Use `Empty_Template.pptx` theme, colours, fonts and layouts as-is (do not redesign) |
 | **Visuals** | Every slide has a "Visual" block: replace it with an image/diagram. A ready inline ASCII/Mermaid diagram is given where useful. |
 | **Speaker notes** | Put each "Speaker note" into the PPT notes pane (not on the slide) |
-| **Style** | Light bullets, one idea per line, max ~6 bullets per slide. Do not overfill. |
+| **Style** | Minimal, digital-only, conceptual. Max ~5 bullets per slide, one idea per line. Purely focused on `sound_meter.vhd` + `tb_sound_meter.vhd`. |
+| **Code fidelity rule** | Slides 5–11 describe ONLY the submitted files. Only Slide 4 mentions analog/hardware, and it is labelled "context only / NOT IN CODE". |
 
-> **How to read this file:** `## Slide N — Title` = one PowerPoint slide. `Bullets` = text on the slide. `Visual` = the picture/diagram to add. `Speaker note` = spoken script. The two framing slides (Cover, References & Thank-You) carry the same branding in every deck.
+> **How to read this file:** `## Slide N — Title` = one PowerPoint slide. `Bullets` = text on the slide. `Visual` = the picture/diagram to add. `Speaker note` = spoken script.
 
 ---
 
@@ -25,7 +26,7 @@
 
 **Type:** Cover  
 **Title:** Digital Decibel Sound Level Indicator with Peak-Hold  
-**Subtitle:** A Digital Hardware Design using VHDL
+**Subtitle:** A Purely Digital Synchronous Concept in VHDL — 8-bit Model
 
 **On-slide details (left-aligned, template title layout):**
 - Course: Computer Organization & Architecture (BTS30101)
@@ -34,39 +35,29 @@
 - Faculty: Dr. Subhankar Shome
 - Department of Computer Science & Engineering, Brainware University
 - Date: 03-11-2026
+- Code under study: `sound_meter.vhd` + `tb_sound_meter.vhd`
 
-**Visual:** University logo (top-right) + a clean hero image of a handheld sound-level meter / decibel meter. Search terms: `sound level meter`, `decibel meter device`, `digital SPL meter`. Free sources: Wikimedia Commons (`https://commons.wikimedia.org/w/index.php?search=sound+level+meter`), Pexels (`https://www.pexels.com/search/sound%20level%20meter/`).
+**Visual:** University logo (top-right) + minimal digital hero image: FPGA / flip-flop / digital waveform abstract. Search terms: `fpga chip digital`, `digital waveform logic`.
 
-**Speaker note:** Good morning. I am Sayantan Bharati, and my topic is a Digital Decibel Sound Level Indicator with Peak-Hold — a hardware/digital-design project built with VHDL. It measures ambient sound, converts it to decibels, and remembers the loudest level reached.
+**Speaker note:** Good morning. I am Sayantan Bharati. This is not a hardware build — it is a purely digital COA concept modelled in VHDL: an 8-bit synchronous block with a live level output and a peak-hold register.
 
 ---
 
 ## Slide 2 — Introduction
 
 **Type:** Introduction  
-**Title:** Introduction — Why Measure Sound in Decibels?
+**Title:** Introduction — A Small Digital Memory Idea
 
 **Bullets:**
-- Sound is a pressure wave; the ear responds to it **logarithmically**, not linearly.
-- The **decibel (dB)** compresses a huge range of pressure into a friendly 0–140 scale.
-- Prolonged exposure above **85 dB** can damage hearing — measurement matters for safety.
-- Analog SPL meters are bulky and drift; a **digital** meter is accurate, cheap and repeatable.
-- This project: a **digital decibel indicator** that shows the current level and **holds the peak**.
-- Core COA ideas used: ADC, registers, clocking, control FSM, fixed-point arithmetic, display driving.
+- Core idea: every clock, remember the **largest value seen so far**.
+- Two outputs: live value `db` + held maximum `peak`.
+- Fully synchronous: one `clk`, one sync `rst`, no analog in code.
+- Teaches three COA basics: **register, comparator, clock discipline**.
+- Demo vehicle: 8-bit codes stand in for "loudness levels".
 
-**Visual:** A simple two-panel image: (a) a sine-wave sound wave with amplitude arrow, (b) a person near a speaker with dB labels 30/60/85/120. Inline sketch:
+**Visual:** Tiny concept strip: `new input → keep max → show live + max`. Search terms: `register max hold concept diagram`.
 
-```
-Pressure wave:            Amplitude  →  louder sound
-   /\      /\
-  /  \    /  \      quiet  .......  loud
- /    \  /    \
-----------------------------------  (time)
-```
-
-Search terms: `sound wave amplitude diagram`, `decibel scale human hearing chart`.
-
-**Speaker note:** The key idea is that our ears hear loudness on a logarithmic scale, and dB is the right unit for that. I will show how a small digital circuit can compute that value and also remember its maximum, which is useful in factories, studios and traffic monitoring.
+**Speaker note:** Forget microphones and circuits for now. The whole project is one digital question: how do you hold a maximum in hardware? One register plus one comparison, updated on every clock — that is the entire submission.
 
 ---
 
@@ -76,331 +67,258 @@ Search terms: `sound wave amplitude diagram`, `decibel scale human hearing chart
 **Title:** Presentation Outline
 
 **Bullets:**
-1. Fundamentals of Sound & the Decibel Scale
-2. System Overview — Block Diagram
-3. Input Stage — Microphone & Signal Conditioning
-4. Digital Signal Processing — RMS to dB
-5. Peak-Hold Detector Design
-6. Timing, Clocking & Control FSM
-7. Output Stage — Display & Indicators
-8. HDL Implementation (VHDL Modules)
-9. Simulation & Results
-10. Applications, Limitations & Future Scope
+1. Outside the Chip — Where Sound Would Come From (context only)
+2. Entity & Ports — As Coded
+3. Clock, Reset & Single Process
+4. Datapath Concept — Live `db` + Held `peak`
+5. Verbatim VHDL Process
+6. Testbench Concept — How We Verify
+7. Results — Tracking, Hold, Reset
+8. COA View, Limits & Future
 
-**Visual:** A numbered "roadmap" graphic (horizontal timeline of the 10 topics). Simple icons per item. Search terms: `presentation agenda roadmap icons`, `process timeline infographic`.
+**Visual:** Minimal 8-step roadmap / timeline. Search terms: `presentation agenda roadmap minimal icons`.
 
-**Speaker note:** I will first build the theory of the decibel, then present the complete system block by block, then show the VHDL implementation and simulation results, and finish with applications and limitations.
+**Speaker note:** Only the first item touches the real world, and just as background. Everything after that is the code itself — ports, clocking, datapath, testbench and what the COA course learns from it.
 
 ---
 
-## Slide 4 — Fundamentals of Sound & the Decibel Scale
+## Slide 4 — Outside the Chip (The Only Non-Digital Page)
 
-**Type:** Content (1/10)  
-**Title:** Sound, Pressure and the Decibel
+**Type:** Content (1/8)  
+**Title:** Where the Signal Would Come From — Context Only
 
 **Bullets:**
-- Sound = tiny air-pressure variations; measured in **pascals (Pa)**.
-- Reference pressure for hearing: **p₀ = 20 µPa** (threshold of hearing).
-- **Sound Pressure Level:** `SPL = 20 · log₁₀(p / p₀)` dB.
-- Why 20? Because dB is power-based: `10·log₁₀(P/P₀)` and power ∝ amplitude².
-- Examples: whisper (~30 dB), conversation (~60 dB), traffic (~85 dB), pain (~120 dB).
-- **dB(A)** weighting mimics the ear's sensitivity; peak level is what causes damage.
+- Real meter (abstract): Mic → Preamp → ADC → digital numbers.
+- **NOT IN CODE:** no mic, no amplifier, no filter, no ADC here.
+- Our code starts AFTER that: `din[7:0]` = "number already inside the chip".
+- From here on, everything is digital, clocked VHDL.
+- Think of `din` as the boundary between physics and architecture.
 
-**Visual:** The decibel scale ladder with everyday examples (rustling leaves → jet engine). Inline reference table:
+**Visual:** Single faded strip with a cut line:
 
 ```
-Level   Example
- 0 dB   Threshold of hearing
-30 dB   Whisper
-60 dB   Normal conversation
-85 dB   Traffic (hearing-safe limit)
-100 dB  Jackhammer
-120 dB  Pain threshold
+[Mic | Preamp | ADC]  - - - CUT (not coded) - - - > din[7:0] --> [THIS PROJECT: digital only]
+   analog world (one box, greyed out)                    digital world (highlighted)
 ```
 
-Search terms: `sound pressure level scale chart`, `decibel examples infographic`. Source idea: Wikimedia Commons `Sound level` diagrams.
+Search terms: `microphone to adc block diagram simple`.
 
-**Speaker note:** The important formula on this slide is SPL equals twenty log-base-ten of pressure over the reference pressure. The factor of twenty, not ten, appears because we are comparing pressures — amplitudes — while the decibel is fundamentally a power ratio. The chart gives real-world anchors so the audience can feel what the numbers mean.
+**Speaker note:** This is the only slide about hardware, kept deliberately to one abstract box. The testbench simply plays the role of the ADC by feeding bytes like 0x10 or 0xA0. After din, there is no analog — only registers and logic.
 
 ---
 
-## Slide 5 — System Overview — Block Diagram
+## Slide 5 — Entity & Ports — As Coded
 
-**Type:** Content (2/10)  
-**Title:** System Overview
+**Type:** Content (2/8)  
+**Title:** The Block — Entity `sound_meter`
 
 **Bullets:**
-- Signal chain: **Microphone → Preamp/Filter → ADC → Digital Processing → Display**.
-- A **clock divider** generates the slow sampling clock from the board's master clock.
-- A **control FSM** sequences convert, compute, update and hold phases.
-- The **peak-hold** block keeps the maximum dB value until reset or decay.
-- Everything after the ADC is **fully digital** — the reason it is accurate and repeatable.
+- `clk, rst : in STD_LOGIC` — timing + clear.
+- `din : in STD_LOGIC_VECTOR(7 downto 0)` — 8-bit level in.
+- `db : out STD_LOGIC_VECTOR(7 downto 0)` — live copy out.
+- `peak : out STD_LOGIC_VECTOR(7 downto 0)` — held maximum out.
+- Internal: one signal `p : unsigned(7 downto 0)` — the stored max.
 
-**Visual:** Replace with the following block diagram (draw as native shapes or as an image):
+**Visual:** Clean entity box with 5 ports (draw as native shapes):
 
 ```mermaid
 flowchart LR
-  MIC["Electret Microphone"] --> PRE["Preamplifier + Anti-alias Filter"]
-  PRE --> ADC["ADC (10-bit SAR)"]
-  ADC --> RMS["RMS Engine"]
-  RMS --> LOG["dB Conversion (Log LUT)"]
-  LOG --> PH["Peak-Hold Block"]
-  PH --> DISP["7-Segment / LED Bar Display"]
-  CLK["Clock Divider"] --> ADC
-  CLK --> RMS
-  CTRL["Control FSM"] --> ADC
-  CTRL --> RMS
-  CTRL --> PH
+  CLK["clk"] --> DUT["sound_meter<br/>clk · rst · din → db · peak"]
+  RST["rst"] --> DUT
+  DIN["din[7:0]"] --> DUT
+  DUT --> DB["db[7:0] live"]
+  DUT --> PEAK["peak[7:0] held"]
 ```
 
-Search terms: `audio level meter block diagram`, `digital sound level meter system block diagram`.
-
-**Speaker note:** This single diagram is the heart of the project. Read it left to right: the microphone turns sound into a voltage, the analogue front end cleans it, the ADC digitises it, digital logic computes RMS and dB, and the peak-hold block stores the maximum before the display shows it. The clock divider and FSM run the whole pipeline.
+**Speaker note:** This is the complete interface — nothing hidden. Two control lines, one byte in, two bytes out, plus one internal byte that remembers the peak. If you understand these five ports, you understand the whole design.
 
 ---
 
-## Slide 6 — Input Stage — Microphone & Signal Conditioning
+## Slide 6 — Clock, Reset & Single Process
 
-**Type:** Content (3/10)  
-**Title:** Input Stage — Capturing Sound
-
-**Bullets:**
-- **Electret condenser microphone**: small, cheap, needs a bias resistor and produces a few mV.
-- **Preamplifier** raises the µV–mV signal to the ADC's 0–Vref range (e.g., gain ×100).
-- **Anti-alias low-pass filter** removes frequencies above half the sampling rate (Nyquist).
-- **ADC**: 10-bit SAR, e.g. fs = 8 kHz; quantisation error sets the accuracy floor.
-- **Reference voltage stability** directly affects dB accuracy — use a clean supply.
-- Calibration: a known 94 dB / 1 kHz calibrator fixes the dB offset in the firmware/LUT.
-
-**Visual:** A schematic-style image of `mic → op-amp preamp → RC low-pass → ADC Vin`, plus a small sine at the mic and an amplified sine at the ADC. Inline ASCII:
-
-```
-Mic (2 mV) --[Preamp x100]--> (0.2 V) --[LPF]--> ADC  ->  digital codes
-```
-
-Search terms: `electret microphone preamplifier circuit`, `anti-aliasing filter before ADC`.
-
-**Speaker note:** The microphone gives only a couple of millivolts, so the preamplifier is essential. The low-pass filter is not optional — without it, high frequencies would fold back into our measurement band and corrupt the reading. The final dB value is calibrated against a standard 94-decibel reference tone.
-
----
-
-## Slide 7 — Digital Signal Processing — RMS to dB
-
-**Type:** Content (4/10)  
-**Title:** From Samples to Decibels
+**Type:** Content (3/8)  
+**Title:** Control Concept — One Process, One Clock
 
 **Bullets:**
-- Loudness is best represented by **RMS** (Root-Mean-Square), not the instantaneous value.
-- Window of N samples: `RMS = √( (1/N) · Σ x[n]² )`.
-- Convert to a level: `dB = 20 · log₁₀( RMS / Vref ) + Calibration_Offset`.
-- A **running/sliding window** gives a smooth, responsive reading.
-- **log₁₀ is expensive in hardware** → use a **look-up table (LUT)** or CORDIC.
-- Fixed-point (e.g., Q8.8) arithmetic keeps the design small and fast.
+- Single `process(clk)` + `if rising_edge(clk)` — nothing else controls it.
+- `rst = '1'` (on a clock edge) clears `db, peak, p` to zero — synchronous.
+- `rst = '0'` = track-and-hold mode: copy live, conditionally update max.
+- No FSM, no divider, no extra states in code.
+- COA idea: **control = when registers are allowed to change**.
 
-**Visual:** A small graph of samples x[n] with the RMS envelope drawn over it, and the squaring → averaging → square-root → log pipeline. Inline pipeline:
-
-```
-x[n] --> [x²] --> [Σ over N] --> [÷ N] --> [√] --> [20 log10] --> [ + offset ] --> dB
-```
-
-Search terms: `RMS envelope of audio signal`, `fixed point log lookup table FPGA`.
-
-**Speaker note:** The RMS step is what makes the meter behave like a human ear — it averages energy over a short window instead of jumping on every spike. The square root and then the logarithm are the two expensive operations; in hardware we replace the logarithm with a lookup table indexed by the RMS value, which is exact enough for a display.
-
----
-
-## Slide 8 — Peak-Hold Detector Design
-
-**Type:** Content (5/10)  
-**Title:** Peak-Hold — Remembering the Loudest Moment
-
-**Bullets:**
-- **Peak-hold** = capture the maximum dB value and hold it so the eye can read it.
-- Simple hardware: a **register** + a **comparator**.
-- Each update: `if new_db > held_db then held_db <= new_db`.
-- A **hold timer** (e.g., 2 s) then either clears or slowly **decays** the value.
-- Two readouts: live level + held peak marker (LED or digital number).
-- Practical reason: peaks are brief; without hold, a spike is gone in milliseconds.
-
-**Visual:** A timing waveform showing a live level with two short spikes and a peak line that stays flat after the spikes. Inline ASCII:
-
-```
-dB
-120 |        .--.                      
- 90 |   /\/\/    \/\      /\/\         
- 60 |__/            \____/    \_ live   
-    |  ...........  ^peak held...___   
-    +-----------------------------------> time
-         peak captured -> held -> reset
-```
-
-Search terms: `peak hold meter time graph`, `peak detector sample and hold circuit`.
-
-**Speaker note:** Peak-hold is a tiny but very useful idea: a comparator and one register. Whenever the new reading is bigger than the stored one, we overwrite it. A timer then holds it long enough to read, and finally clears or decays it. This is the difference between a meter that is merely accurate and one that is actually usable in a noisy environment.
-
----
-
-## Slide 9 — Timing, Clocking & Control FSM
-
-**Type:** Content (6/10)  
-**Title:** Clocking and the Control Unit
-
-**Bullets:**
-- Board runs at a fast master clock; the ADC needs a much slower sample rate.
-- **Clock divider**: counter that produces `clk_sample` (e.g., 8 kHz) from 50 MHz.
-- The **control FSM** sequences the pipeline stages in defined states.
-- States: `IDLE → CONVERT → COMPUTE_RMS → CONVERT_dB → UPDATE_HOLD → DISPLAY`.
-- Flags (e.g., `adc_done`, `window_full`) drive transitions — classic **control-unit** design.
-- This is a direct application of the COA control-unit / instruction-cycle concept.
-
-**Visual:** A state diagram + a small timing diagram. Inline state machine:
+**Visual:** Two-state mini diagram + clock sketch:
 
 ```mermaid
 stateDiagram-v2
-  [*] --> IDLE
-  IDLE --> CONVERT: start
-  CONVERT --> COMPUTE_RMS: adc_done
-  COMPUTE_RMS --> CONVERT_dB: window_full
-  CONVERT_dB --> UPDATE_HOLD
-  UPDATE_HOLD --> DISPLAY
-  DISPLAY --> IDLE
+  [*] --> RESET: rst=1 @ clk
+  RESET --> HOLD: rst=0
+  HOLD --> RESET: rst=1 @ clk
+  HOLD --> HOLD: each clk: db<=d, if d>p: p<=d
 ```
 
-Search terms: `FSM state diagram VHDL`, `clock divider VHDL counter`.
+Plus: `clk _|‾|_|‾|_ (testbench: 10 ns / 100 MHz)`.
 
-**Speaker note:** The control unit is where COA meets this project. Exactly like an instruction cycle, our FSM moves through fetch-like and execute-like states: start a conversion, wait for it, compute, update the peak, then refresh the display, and loop forever. The clock divider simply gives us a human-scale sample rate from the fast board clock.
+**Speaker note:** Control here is minimal on purpose. Reset is synchronous, so it only acts on a rising edge. Otherwise every clock does the same two things: show the input live, and keep it if it is a new maximum. That is the entire control story.
 
 ---
 
-## Slide 10 — Output Stage — Display & Indicators
+## Slide 7 — Datapath Concept — Live + Peak
 
-**Type:** Content (7/10)  
-**Title:** Showing the Result
+**Type:** Content (4/8)  
+**Title:** Datapath Concept — Copy + Compare + Store
 
 **Bullets:**
-- Options: **3-digit 7-segment LED**, **10-LED bar graph**, or an LCD text line.
-- 7-segment needs a **binary-to-BCD decoder** + a **segment-pattern ROM/LUT**.
-- A **bar graph** (LM3914-style or LED array) gives an instant visual of level.
-- A **separate peak LED** or a second number shows the held peak.
-- Multiplexing: drive one digit at a time fast enough to look steady (>50 Hz refresh).
-- Colour coding: green (safe) → amber (loud) → red (peak/danger).
+- Step 1 — Convert: `d := unsigned(din)` so we can compare numerically.
+- Step 2 — Live: `db <= d` — output follows input after 1 clock.
+- Step 3 — Compare: `d > p ?` — is this input bigger than stored max?
+- Step 4 — Store: if yes `p <= d`, else keep old `p`; `peak` shows `p`.
+- So: `db` = present, `peak` = best-so-far (lags `p` by 1 cycle).
 
-**Visual:** Two mock-ups — a 3-digit 7-segment module showing "078" and a 10-LED bar graph with one red peak LED held. Inline 7-segment map:
+**Visual:** Native datapath diagram (theme colours):
 
+```mermaid
+flowchart LR
+  DIN["din[7:0]"] --> D["d := unsigned(din)"]
+  D --> DB["db live"]
+  D --> CMP{"d > p ?"}
+  P["p reg<br/>stored max"] --> CMP
+  CMP -->|yes| P
+  P --> PEAK["peak held"]
 ```
-    aaa            digit -> segments (active high)
-   f   b           segment LUT: 0..9 -> 7'b code
-    ggg            peak LED lights when held_db == max
-   e   c
-    ddd   .dp
-```
 
-Search terms: `7 segment display pinout segments`, `LED bar graph level meter`.
-
-**Speaker note:** The output stage is the only part the user sees, so it must be readable. A bar graph communicates level at a glance, while a numeric display gives the exact dB value. The held peak gets its own LED or digit so it is never confused with the live reading. Multiplexing keeps the pin count low.
+**Speaker note:** Read left to right: the byte is copied to the live display, and simultaneously compared against the stored maximum. Only a larger value overwrites the register. That compare-and-hold is the single conceptual datapath of this project.
 
 ---
 
-## Slide 11 — HDL Implementation (VHDL Modules)
+## Slide 8 — Verbatim VHDL Process
 
-**Type:** Content (8/10)  
-**Title:** Implementing the Design in VHDL
+**Type:** Content (5/8)  
+**Title:** The Code — Exactly As Submitted
 
 **Bullets:**
-- Top level wires the sub-modules; each block is a separate **entity + architecture**.
-- Key entities: `clk_divider`, `adc_interface`, `rms_calc`, `log_lut`, `peak_hold`, `seg_driver`, `top`.
-- Use **synchronous, rising-edge** processes with reset for reliable hardware.
-- `log_lut`: a `case` statement / ROM mapping RMS index → dB value.
-- `peak_hold`: two flip-flop registers (current, held) plus a timer counter.
-- Synthesises to LUTs + flip-flops on an FPGA (e.g., Xilinx/Intel) with no CPU needed.
+- File: `sound_meter.vhd`, architecture `rtl`, needs `NUMERIC_STD`.
+- Whole behaviour = the process below — nothing else in the file.
+- Note `variable d` (immediate) vs `signal p` (holds across clocks).
+- Note `peak` shows the *old* `p` — one-cycle lag is in the code.
 
-**Visual:** A module hierarchy tree and a short VHDL snippet. Inline snippet:
+**Visual:** Monospace code card (theme background), verbatim:
 
 ```vhdl
--- Peak-hold: keep the largest dB seen
-process(clk, reset)
+process(clk)
+    variable d : unsigned(7 downto 0);
 begin
-  if reset = '1' then
-    held_db <= (others => '0');
-  elsif rising_edge(clk) then
-    if new_db > held_db then
-      held_db <= new_db;      -- new peak captured
-    elsif hold_expired = '1' then
-      held_db <= (others => '0');  -- release
+    if rising_edge(clk) then
+        if rst = '1' then
+            db   <= (others => '0');
+            peak <= (others => '0');
+            p    <= (others => '0');
+        else
+            d := unsigned(din);
+            db <= std_logic_vector(d);
+            if d > p then
+                p <= d;
+            end if;
+            peak <= std_logic_vector(p);
+        end if;
     end if;
-  end if;
 end process;
 ```
 
-Search terms: `VHDL entity architecture example`, `FPGA modular design hierarchy`.
-
-**Speaker note:** This slide shows the design is not just theory. Each function is a clean VHDL module, and the top level connects them like blocks on the diagram. The peak-hold code is only a few lines: compare, store, and release on a timer. That is the whole project in miniature.
+**Speaker note:** Point at each line: edge check, synchronous clear, convert, live copy, conditional max update, held output. There are no hidden entities — no ADC, RMS, log table or display driver. This process is the complete design.
 
 ---
 
-## Slide 12 — Simulation & Results
+## Slide 9 — Testbench Concept — How We Verify
 
-**Type:** Content (9/10)  
-**Title:** Simulation & Verification
+**Type:** Content (6/8)  
+**Title:** Verification Concept — Testbench Drives Bytes
 
 **Bullets:**
-- A **testbench** feeds known-amplitude sine waves and checks the dB output.
-- Test cases: silence (near 0), 60 dB tone, 94 dB calibrator, rapid peak then fade.
-- Compare the computed dB against the `20·log₁₀` reference value.
-- Verify **peak-hold**: spike applied → held value stays after input drops.
-- Typical accuracy: ±1–2 dB over the calibrated range (limited by ADC + window).
-- Waveforms confirm FSM timing, clock division and display multiplexing.
+- File: `tb_sound_meter.vhd` instantiates DUT as `uut`.
+- Clock: `clk <= not clk after 5 ns` → 10 ns / ~100 MHz.
+- Reset 20 ns at start, then each vector held 100 ns (~10 clocks).
+- Vectors: `10 → 30 → 50 → 70 → 90 → 60 → 40 → A0 → 20 → 00 → rst → 80`.
+- Design of vectors: rise, dip (hold check), new max, reset check.
 
-**Visual:** A waveform screenshot (ADC codes vs computed dB, with a peak marker) plus a results table. Inline table:
+**Visual:** Stimulus strip:
 
 ```
-Input amplitude   Expected dB   Measured dB   Error
-  silence            ~0           0.5          0.5
-  94 dB tone         94           94.8         0.8
-  spike then quiet   112 -> hold  112 (held)   0.0 held
+rst 20ns | 10 30 50 70 90 | 60 40 (dip) | A0 (new max) | 20 00 (hold) | rst 30ns | 80
+clk: _|‾|_|‾|_ 10 ns period, each din held 100 ns
 ```
 
-Search terms: `VHDL testbench waveform simulation`, `FPGA logic analyzer waveform`.
-
-**Speaker note:** Verification is where the design earns trust. We drive the testbench with tones we can compute by hand and compare the meter reading against the exact formula. The important result is the last row: after a loud spike, the held value stays put, which proves the peak-hold logic works.
+**Speaker note:** The testbench is the ADC substitute. It feeds a rising ramp to prove tracking, then a dip to prove the peak does not fall, then a higher value to prove the peak can advance, then a reset to prove clearing. Each step is held long enough to settle.
 
 ---
 
-## Slide 13 — Applications, Limitations & Future Scope
+## Slide 10 — Results — Tracking, Hold, Reset
 
-**Type:** Content (10/10)  
-**Title:** Applications & Limitations
+**Type:** Content (7/8)  
+**Title:** What Simulation Shows
 
 **Bullets:**
-- **Applications:** industrial noise monitoring, workplace safety, studio/audio, traffic and classroom level meters.
-- **Limitations:** single microphone → no direction info; unweighted vs dB(A) trade-offs.
-- **Accuracy floor** set by ADC bits and microphone tolerance; needs periodic calibration.
-- Fast transients need a small enough window; large windows appear sluggish.
-- **Future scope:** add dB(A)/dB(C) weighting filters, data logging to SD card, IoT/Wi-Fi reporting, OLED display, AGC.
-- Maps directly to COA concepts: data acquisition, memory/registers, control FSM, I/O interfacing.
+- **Tracking:** `db` = `din` (one clock later) on every step.
+- **Hold:** after `90`, inputs `60/40` leave `peak = 90`.
+- **New max:** `A0` moves `peak` to `A0`; `20/00` still hold `A0`.
+- **Reset:** mid-run `rst` forces `00`; next `80` restarts peak at `80`.
+- Waveform to show: `clk / rst / din / db / peak` with flat hold plateaus.
 
-**Visual:** An icon row of real-world uses (factory, studio, road, classroom) with a small "future scope" callout box. Search terms: `industrial noise monitoring`, `sound level meter application`.
+**Visual:** Settled-value table (verbatim behaviour) + waveform placeholder:
 
-**Speaker note:** To close, this design has real uses in safety, industry and audio, but it is honest about its limits: one microphone, a calibration dependency, and a latency-versus-smoothness trade-off. Natural next steps are frequency weighting and logging. And it ties back to the course — ADC, registers, FSM control and I/O are all exercised.
+```
+ din   db    peak   meaning
+ 10    10    10     rising
+ 30    30    30     new max
+ 50    50    50     new max
+ 70    70    70     new max
+ 90    90    90     max so far
+ 60    60    90     HOLD
+ 40    40    90     HOLD
+ A0    A0    A0     new max (160)
+ 20    20    A0     HOLD
+ 00    00    A0     HOLD
+ rst   00    00     clear
+ 80    80    80     restart
+```
+
+**Speaker note:** Walk three ideas only: it tracks, it holds through dips, and reset clears it. The flat peak line through 60 and 40 is the proof of hold; the jump at A0 is the proof that a larger value replaces the peak.
 
 ---
 
-## Slide 14 — References & Thank You
+## Slide 11 — COA View, Limits & Future
+
+**Type:** Content (8/8)  
+**Title:** COA Reading + Honest Limits
+
+**Bullets:**
+- COA mapping: `p` = tiny storage, comparator = ALU bit, `clk/rst` = control.
+- Synthesises to ~16 flip-flops + 8-bit compare — pure datapath + control.
+- Limit (stated): levels are abstract; no dB math, no decay timer, no display.
+- Future (if extended): `rms/log-LUT` before `din`, `BCD/7-seg` after `db/peak`.
+- Value: clean minimal example of synchronous register discipline.
+
+**Visual:** Three-icon row: `Storage (p)` + `Compute (>)` + `Control (clk/rst)` → `I/O (din/db/peak)`. Plus small grey "future" callout: `log-LUT, timer, display`.
+
+**Speaker note:** Close with the COA moral: storage, a tiny piece of computation, sequencing by clock, and defined I/O — that is computer organisation in miniature. The limits are honest: this proves the hold half, not a calibrated meter; the future boxes show where a full meter would attach without changing this core.
+
+---
+
+## Slide 12 — References & Thank You
 
 **Type:** References + Thank-You (single slide)  
 **Title:** References & Thank You
 
 **Bullets (References):**
-- Patterson & Hennessy — *Computer Organization and Design* (5th ed.), Elsevier.
-- W. Stallings — *Computer Organization and Architecture: Designing for Performance* (10th ed.), Pearson.
-- C. Hamacher — *Computer Organization* (6th ed.), McGraw Hill.
-- Course lecture notes — COA Modules 2 & 3 (Data representation, Memory/I-O design).
-- Web: FPGA/VHDL reference designs and standard SPL/decibel references.
+- Patterson & Hennessy — *Computer Organization and Design* (5th ed.).
+- Stallings — *Computer Organization and Architecture* (10th ed.).
+- Hamacher — *Computer Organization* (6th ed.).
+- COA lecture notes — Modules 2 & 3 (datapath, control, I/O).
+- Submitted files: `sound_meter.vhd`, `tb_sound_meter.vhd` (+ IEEE 1076 / NUMERIC_STD).
 
 **Thank-You text (bottom):**
 - "Thank you for your attention — Questions are welcome."
 - Sayantan Bharati | BWU/BTS/25/503 | Section B
 
-**Visual:** Small book-cover thumbnails of the reference books, plus a "Q&A" icon. Search terms: `question and answer icon`, book covers of Patterson & Hennessy / Stallings.
+**Visual:** Small book-cover thumbnails + "Q&A" icon. Search terms: `question and answer icon`.
 
-**Speaker note:** These are the standard references behind this presentation. Thank you for listening — I am happy to take any questions.
+**Speaker note:** These are the standard COA references plus the two submitted VHDL files. Thank you — happy to take questions on the compare-and-hold logic and the one-cycle peak lag.

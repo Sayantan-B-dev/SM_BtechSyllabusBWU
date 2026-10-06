@@ -1,0 +1,85 @@
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+
+entity tb_alarm_clock is
+end tb_alarm_clock;
+
+architecture sim of tb_alarm_clock is
+
+    signal clk        : STD_LOGIC := '0';
+    signal reset      : STD_LOGIC := '1';
+    signal set_alarm  : STD_LOGIC := '0';
+    signal alarm_on   : STD_LOGIC := '0';
+    signal snooze     : STD_LOGIC := '0';
+    signal set_hour   : STD_LOGIC := '0';
+    signal set_minute : STD_LOGIC := '0';
+
+    signal hour       : STD_LOGIC_VECTOR(4 downto 0);
+    signal minute     : STD_LOGIC_VECTOR(5 downto 0);
+    signal second     : STD_LOGIC_VECTOR(5 downto 0);
+    signal am_pm      : STD_LOGIC;
+    signal alarm      : STD_LOGIC;
+
+begin
+
+    uut: entity work.alarm_clock
+        port map (
+            clk        => clk,
+            reset      => reset,
+            set_alarm  => set_alarm,
+            alarm_on   => alarm_on,
+            snooze     => snooze,
+            set_hour   => set_hour,
+            set_minute => set_minute,
+            hour       => hour,
+            minute     => minute,
+            second     => second,
+            am_pm      => am_pm,
+            alarm      => alarm
+        );
+
+    clk <= not clk after 5 ns;
+
+    process
+    begin
+
+        reset <= '1';
+        wait for 20 ns;
+
+        reset <= '0';
+        alarm_on <= '1';
+
+        wait for 100 ns;
+
+        set_alarm <= '1';
+
+        set_hour <= '1';
+        wait for 10 ns;
+        set_hour <= '0';
+
+        set_minute <= '1';
+        wait for 10 ns;
+        set_minute <= '0';
+
+        set_alarm <= '0';
+
+        wait for 500 ns;
+
+        snooze <= '1';
+        wait for 10 ns;
+        snooze <= '0';
+
+        wait for 200 ns;
+
+        reset <= '1';
+        wait for 20 ns;
+
+        reset <= '0';
+
+        wait for 500 ns;
+
+        wait;
+
+    end process;
+
+end sim;
