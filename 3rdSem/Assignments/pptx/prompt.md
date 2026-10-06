@@ -64,6 +64,8 @@ Build the presentation from `coa/ppt_content_coa.md`.
 
 **Deck details (for the cover slide and footer):**
 - Title: *Digital Decibel Sound Level Indicator with Peak-Hold*
+- Subtitle: *A Digital Hardware Design using VHDL — Simplified 8-bit Model*
+- Design files (show on cover): `sound_meter.vhd` + `tb_sound_meter.vhd`
 - Course: Computer Organization & Architecture (BTS30101)
 - Student: Sayantan Bharati | BWU/BTS/25/503 | Section B
 - Faculty: Dr. Subhankar Shome
@@ -71,9 +73,12 @@ Build the presentation from `coa/ppt_content_coa.md`.
 - Programme: B.Tech (CSE), Batch 2025, AY 2026-27 (Odd Semester 3)
 - Date: 03-11-2026
 
-**Subject-specific emphasis:**
-- Recreate the system block diagram (Slide 5), the FSM state diagram (Slide 9) and the peak-hold timing diagram (Slide 8) as **native editable PowerPoint diagrams**.
-- Present the VHDL snippet on Slides 11 and 12 in a monospace "code card" that matches the theme.
+**Subject-specific emphasis (must match actual code — do not invent blocks):**
+- Slide 5: recreate the ACTUAL coded datapath `din[7:0] → d → db` + `comparator d>p + p-reg → peak` with `clk` + sync `rst` as a **native editable PowerPoint diagram**. Do NOT draw ADC / RMS / Log-LUT / clock-divider / FSM — none exist in `sound_meter.vhd`.
+- Slide 8: draw the peak-hold timing strip from the testbench vectors (`10→30→50→70→90→60→40→A0→20→00 → rst → 80`) showing `db` tracking and `peak` holding at `90` then `A0`.
+- Slide 9: there is NO FSM/divider in code — show single `process(clk)` + `rising_edge` + synchronous-reset control only (Reset vs Track-and-Hold). Label divider/multi-state FSM as future extension if shown.
+- Slides 11 and 12: present the VERBATIM VHDL process from `sound_meter.vhd` and the VERBATIM hex table from `tb_sound_meter.vhd` in a monospace "code card" that matches the theme. Preserve port names `clk, rst, din, db, peak` and the 1-cycle `peak` lag note.
+- Honesty rule: anywhere theory (mic/preamp/RMS/log/BCD display) appears, keep the slide's "NOT in code / future" label — never present it as implemented.
 - Keep the reference books as short one-line entries, not full citations.
 
 **Output file:** `PPT_BTS30101_COA_Sayantan_Bharati.pptx`
