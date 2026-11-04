@@ -1,25 +1,24 @@
 library ieee;
 use ieee.std_logic_1164.all;
 
-entity tb_simple_traffic is
-end tb_simple_traffic;
+entity tb_mini_cpu is
+end tb_mini_cpu;
 
-architecture test of tb_simple_traffic is
+architecture test of tb_mini_cpu is
 
     signal clk : std_logic := '0';
     signal reset : std_logic := '0';
-    signal ns_green, ns_red, ew_green, ew_red : std_logic;
+    signal acc_out : std_logic_vector(7 downto 0);
+    signal halted : std_logic;
 
 begin
 
-    uut: entity work.simple_traffic
+    uut: entity work.mini_cpu
         port map (
             clk => clk,
             reset => reset,
-            ns_green => ns_green,
-            ns_red => ns_red,
-            ew_green => ew_green,
-            ew_red => ew_red
+            acc_out => acc_out,
+            halted => halted
         );
 
     clk <= not clk after 5 ns;
@@ -30,7 +29,7 @@ begin
         wait for 10 ns;
 
         reset <= '0';
-        wait for 40 ns;
+        wait for 50 ns;
 
         wait;
     end process;
