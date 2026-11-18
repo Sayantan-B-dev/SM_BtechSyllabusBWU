@@ -1,4 +1,4 @@
-# *.pdf
+
 __pycache__/
 *.pyc
 Microprocessor_and_Microcontroller_compressed.pdf
@@ -11,3 +11,11 @@ npm-debug.log*
 */DBMS/*/output/
 *_images/
 **/*Suggestions/**/*.pdf
+
+
+*.pdf
+.pdf
+*.doc
+*.docx
+*.ppt
+*.pptx
